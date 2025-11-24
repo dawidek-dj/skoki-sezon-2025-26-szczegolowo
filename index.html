@@ -1,31 +1,14 @@
-
+<!DOCTYPE html>
 <html lang="pl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Lillehammer Opening 2025</title>
-    
-    <!-- 1. Fix dla bibliotek oczekujących środowiska Node.js (naprawia błędy "process is not defined") -->
-    <script>
-        window.process = { env: { NODE_ENV: 'production' } };
-    </script>
-
-    <!-- 2. Pobieranie stylów Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    
-    <!-- 3. Pobieranie React i ReactDOM -->
-    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
-    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
-    
-    <!-- 4. Pobieranie Babel (tłumaczy kod Reacta w przeglądarce) -->
+    <!-- Babel umożliwia używanie JSX w przeglądarce -->
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-    
-    <!-- 5. Pobieranie Ikon (Lucide React) - Zaktualizowana wersja -->
-    <script src="https://unpkg.com/lucide-react@0.460.0/dist/umd/lucide-react.min.js"></script>
-
     <style>
         body { font-family: 'Inter', sans-serif; }
-        /* Ukrywanie paska przewijania w niektórych elementach dla estetyki */
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
     </style>
@@ -33,21 +16,44 @@
 <body class="bg-slate-50">
     <div id="root"></div>
 
-    <!-- Główny skrypt aplikacji -->
-    <script type="text/babel">
-        // --- IMPORTY ZAMIENIONE NA ZMIENNE GLOBALNE ---
-        const { useState, useMemo, useEffect } = React;
+    <!-- Używamy data-type="module", aby korzystać z nowoczesnych importów -->
+    <script type="text/babel" data-type="module">
+        import React, { useState, useMemo, useEffect } from 'https://esm.sh/react@18.2.0';
+        import { createRoot } from 'https://esm.sh/react-dom@18.2.0/client';
         
-        // Pobieramy ikony z globalnego obiektu lucideReact
-        // Upewniamy się, że obiekt istnieje, zanim spróbujemy go użyć
-        const Icons = window.lucideReact || {};
-        const { 
+        // Importujemy ikony z esm.sh - to gwarantuje, że załadują się poprawnie
+        import { 
             Calendar, Filter, Search, ChevronDown, ChevronUp, Snowflake, Trophy, 
             Calculator, CheckSquare, Square, Star, Users, Globe, AlertCircle, 
             XCircle, Sun, Eye, EyeOff, Sliders 
-        } = Icons;
+        } from 'https://esm.sh/lucide-react@0.292.0';
 
-        // --- DANE LILLEHAMMER (AKTYWNI W WEEKEND) ---
+        // Komponent ErrorBoundary, żeby uniknąć "szarego ekranu" w razie błędu
+        class ErrorBoundary extends React.Component {
+            constructor(props) {
+                super(props);
+                this.state = { hasError: false, error: null };
+            }
+            static getDerivedStateFromError(error) {
+                return { hasError: true, error };
+            }
+            render() {
+                if (this.state.hasError) {
+                    return (
+                        <div className="p-10 text-center text-red-600 bg-red-50 m-4 rounded-xl border border-red-200">
+                            <h1 className="text-xl font-bold mb-2">Wystąpił błąd aplikacji 😕</h1>
+                            <p className="font-mono text-sm bg-white p-2 rounded border border-red-100 inline-block">
+                                {this.state.error.toString()}
+                            </p>
+                            <p className="mt-4 text-sm text-slate-500">Spróbuj odświeżyć stronę.</p>
+                        </div>
+                    );
+                }
+                return this.props.children;
+            }
+        }
+
+        // --- DANE LILLEHAMMER ---
         const RAW_DATA = [
             { name: "Ryoyu Kobayashi", country: "JPN", isoCode: "jp", t1: 82.3, t2: 91.6, m1: 141.5, m2: 135.2, q1: 135.5, c1_1: 156.8, c1_2: 147.3, q2: 137.4, c2_1: 144.4, c2_2: 146.1 },
             { name: "Domen Prevc", country: "SLO", isoCode: "si", t1: 0, t2: 109.6, m1: 148.4, m2: 139.2, q1: 128.5, c1_1: 159.7, c1_2: 145.1, q2: 140.9, c2_1: 147.9, c2_2: 139.4 },
@@ -124,7 +130,7 @@
             { name: "Kasperi Valto", country: "FIN", isoCode: "fi", t1: 59.4, t2: 60.5, m1: 0, m2: 0, q1: 0, c1_1: 0, c1_2: 0, q2: 76.6, c2_1: 0, c2_2: 0 },
         ];
 
-        // --- DANE ZAWODNIKÓW PŚ 2024/25 (Ze zdjęcia) ---
+        // --- DANE ZAWODNIKÓW PŚ 2024/25 ---
         const WC_2025_DATA = [
             { rank: 1, name: "Daniel Tschofenig", country: "AUT", isoCode: "at", points: 1805 },
             { rank: 2, name: "Jan Hoerl", country: "AUT", isoCode: "at", points: 1652 },
@@ -178,7 +184,7 @@
             { rank: 50, name: "Felix Hoffmann", country: "GER", isoCode: "de", points: 27 }
         ];
 
-        // --- DANE LGP 2025 (Ze zdjęcia) ---
+        // --- DANE LGP 2025 ---
         const LGP_2025_DATA = [
             { name: "Philipp Raimund", country: "GER", isoCode: "de", points: 490 },
             { name: "Sakutaro Kobayashi", country: "JPN", isoCode: "jp", points: 392 },
@@ -362,9 +368,7 @@
                 }
             };
 
-            // --- KOLEJNOŚĆ EFEKTÓW ---
-            
-            // 1. Efekt od bestN
+            // --- KOLEJNOŚĆ EFEKTÓW DLA POPRAWNEGO SORTOWANIA NA STARCIE ---
             useEffect(() => {
                 if (activeTab === 'lillehammer') {
                     setSortBy('bestNSum');
@@ -372,15 +376,12 @@
                 }
             }, [bestN, activeTab]);
 
-            // 2. Efekt od selectedColumns (uruchomi się jako drugi przy starcie i ustawi 'customSum')
             useEffect(() => {
                 if (activeTab === 'lillehammer') {
                     setSortBy('customSum');
                     setSortDirection('desc');
                 }
             }, [selectedColumns, activeTab]);
-
-            // -------------------------
 
             const processedData = useMemo(() => {
                 const skiersMap = {};
@@ -873,8 +874,12 @@
             );
         }
 
-        const root = ReactDOM.createRoot(document.getElementById('root'));
-        root.render(<SkiJumpingApp />);
+        const root = createRoot(document.getElementById('root'));
+        root.render(
+            <ErrorBoundary>
+                <SkiJumpingApp />
+            </ErrorBoundary>
+        );
     </script>
 </body>
 </html>
