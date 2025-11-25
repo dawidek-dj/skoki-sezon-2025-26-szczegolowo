@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+
 <html lang="pl">
 <head>
     <meta charset="UTF-8">
@@ -21,14 +21,13 @@
         import React, { useState, useMemo, useEffect } from 'https://esm.sh/react@18.2.0';
         import { createRoot } from 'https://esm.sh/react-dom@18.2.0/client';
         
-        // Importujemy ikony z esm.sh - to gwarantuje, że załadują się poprawnie
         import { 
             Calendar, Filter, Search, ChevronDown, ChevronUp, Snowflake, Trophy, 
             Calculator, CheckSquare, Square, Star, Users, Globe, AlertCircle, 
-            XCircle, Sun, Eye, EyeOff, Sliders 
+            XCircle, Sun, Eye, EyeOff, Sliders, MapPin, ChevronRight
         } from 'https://esm.sh/lucide-react@0.292.0';
 
-        // Komponent ErrorBoundary, żeby uniknąć "szarego ekranu" w razie błędu
+        // Komponent ErrorBoundary
         class ErrorBoundary extends React.Component {
             constructor(props) {
                 super(props);
@@ -54,7 +53,7 @@
         }
 
         // --- DANE LILLEHAMMER ---
-        const RAW_DATA = [
+        const LILLEHAMMER_DATA = [
             { name: "Ryoyu Kobayashi", country: "JPN", isoCode: "jp", t1: 82.3, t2: 91.6, m1: 141.5, m2: 135.2, q1: 135.5, c1_1: 156.8, c1_2: 147.3, q2: 137.4, c2_1: 144.4, c2_2: 146.1 },
             { name: "Domen Prevc", country: "SLO", isoCode: "si", t1: 0, t2: 109.6, m1: 148.4, m2: 139.2, q1: 128.5, c1_1: 159.7, c1_2: 145.1, q2: 140.9, c2_1: 147.9, c2_2: 139.4 },
             { name: "Felix Hoffmann", country: "GER", isoCode: "de", t1: 95.8, t2: 106.6, m1: 143.1, m2: 144.9, q1: 146.1, c1_1: 158.9, c1_2: 134.7, q2: 130.8, c2_1: 143.8, c2_2: 142.4 },
@@ -87,7 +86,7 @@
             { name: "Tomofumi Naito", country: "JPN", isoCode: "jp", t1: 73.0, t2: 78.9, m1: 0, m2: 0, q1: 124.9, c1_1: 134.3, c1_2: 0, q2: 109.2, c2_1: 114.1, c2_2: 109.1 },
 
             // --- ODPADLI W 1. SERII NIEDZIELI ---
-            { name: "Kevin Bickner", country: "USA", isoCode: "us", t1: 79.6, t2: 91.1, m1: 114.6, m2: 0, q1: 114.4, c1_1: 130.7, c1_2: 0, q2: 111.7, c2_1: 113.6, c2_2: 0 },
+            { name: "Kevin Bickner", country: "USA", isoCode: "us", t1: 79.6, t2: 91.1, m1: 114.6, m2: 0, q1: 114.4, c1_1: 130.7, c1_2: 0, q2: 111.7, c1_2: 0, c2_1: 113.6, c2_2: 0 },
             { name: "Sandro Hauswirth", country: "SUI", isoCode: "ch", t1: 58.3, t2: 63.7, m1: 110.4, m2: 0, q1: 125.0, c1_1: 132.3, c1_2: 0, q2: 110.8, c2_1: 111.9, c2_2: 0 },
             { name: "Mackenzie Boyd-Clowes", country: "CAN", isoCode: "ca", t1: 58.3, t2: 67.6, m1: 108.5, m2: 112.3, q1: 107.0, c1_1: 0, c1_2: 0, q2: 111.3, c2_1: 111.9, c2_2: 0 },
             { name: "Halvor Egner Granerud", country: "NOR", isoCode: "no", t1: 57.6, t2: 78.9, m1: 0, m2: 0, q1: 121.7, c1_1: 137.3, c1_2: 134.6, q2: 113.7, c2_1: 111.4, c2_2: 0 },
@@ -130,8 +129,81 @@
             { name: "Kasperi Valto", country: "FIN", isoCode: "fi", t1: 59.4, t2: 60.5, m1: 0, m2: 0, q1: 0, c1_1: 0, c1_2: 0, q2: 76.6, c2_1: 0, c2_2: 0 },
         ];
 
-        // --- DANE ZAWODNIKÓW PŚ 2024/25 ---
-        const WC_2025_DATA = [
+        // --- DANE FALUN - 25.11.2025 ---
+        // Zaktualizowane o wyniki konkursu
+        const FALUN_DATA = [
+            { name: "Daniel Tschofenig", country: "AUT", isoCode: "at", t1: 72.7, t2: 65.2, q: 119.6, c1: 121.0, c2: 119.2 },
+            { name: "Stefan Kraft", country: "AUT", isoCode: "at", t1: 75.2, t2: 68.6, q: 118.2, c1: 127.4, c2: 122.5 },
+            { name: "Stephan Embacher", country: "AUT", isoCode: "at", t1: 78.8, t2: 70.3, q: 117.0, c1: 119.9, c2: 121.9 },
+            { name: "Manuel Fettner", country: "AUT", isoCode: "at", t1: 77.5, t2: 69.7, q: 116.8, c1: 109.0, c2: 117.1 },
+            { name: "Felix Hoffmann", country: "GER", isoCode: "de", t1: 75.1, t2: 70.6, q: 116.7, c1: 115.8, c2: 119.9 },
+            { name: "Ren Nikaido", country: "JPN", isoCode: "jp", t1: 67.6, t2: 0, q: 114.2, c1: 117.6, c2: 113.6 },
+            { name: "Philipp Raimund", country: "GER", isoCode: "de", t1: 67.4, t2: 71.4, q: 113.8, c1: 119.9, c2: 125.0 },
+            { name: "Naoki Nakamura", country: "JPN", isoCode: "jp", t1: 0, t2: 60.5, q: 113.6, c1: 115.6, c2: 113.9 },
+            { name: "Anze Lanisek", country: "SLO", isoCode: "si", t1: 75.5, t2: 71.3, q: 111.9, c1: 122.2, c2: 125.5 },
+            { name: "Kacper Tomasiak", country: "POL", isoCode: "pl", t1: 70.4, t2: 65.5, q: 111.5, c1: 119.4, c2: 111.6 },
+            { name: "Jan Hoerl", country: "AUT", isoCode: "at", t1: 79.7, t2: 71.3, q: 111.5, c1: 119.0, c2: 121.6 },
+            { name: "Marius Lindvik", country: "NOR", isoCode: "no", t1: 73.6, t2: 68.2, q: 111.1, c1: 118.2, c2: 113.8 },
+            { name: "Artti Aigro", country: "EST", isoCode: "ee", t1: 70.1, t2: 63.3, q: 109.9, c1: 116.1, c2: 106.1 },
+            { name: "Kamil Stoch", country: "POL", isoCode: "pl", t1: 66.7, t2: 56.9, q: 109.3, c1: 117.2, c2: 111.3 },
+            { name: "Pius Paschke", country: "GER", isoCode: "de", t1: 0, t2: 57.1, q: 108.5, c1: 110.9, c2: 114.0 },
+            { name: "Gregor Deschwanden", country: "SUI", isoCode: "ch", t1: 69.7, t2: 60.2, q: 108.1, c1: 113.5, c2: 107.7 },
+            { name: "Antti Aalto", country: "FIN", isoCode: "fi", t1: 70.8, t2: 60.9, q: 107.9, c1: 113.5, c2: 110.3 },
+            { name: "Jason Colby", country: "USA", isoCode: "us", t1: 65.7, t2: 63.5, q: 107.0, c1: 106.4, c2: 0 },
+            { name: "Maximilian Ortner", country: "AUT", isoCode: "at", t1: 69.4, t2: 60.3, q: 105.7, c1: 112.7, c2: 114.3 },
+            { name: "Sandro Hauswirth", country: "SUI", isoCode: "ch", t1: 56.9, t2: 55.7, q: 105.4, c1: 106.3, c2: 0 },
+            { name: "Rok Oblak", country: "SLO", isoCode: "si", t1: 66.5, t2: 56.6, q: 104.2, c1: 111.5, c2: 111.0 },
+            { name: "Erik Belshaw", country: "USA", isoCode: "us", t1: 64.3, t2: 57.6, q: 104.1, c1: 98.5, c2: 0 },
+            { name: "Tomofumi Naito", country: "JPN", isoCode: "jp", t1: 64.2, t2: 56.8, q: 103.9, c1: 105.1, c2: 0 },
+            { name: "Dawid Kubacki", country: "POL", isoCode: "pl", t1: 60.7, t2: 51.7, q: 103.8, c1: 106.8, c2: 0 },
+            { name: "Yukiya Sato", country: "JPN", isoCode: "jp", t1: 60.1, t2: 51.4, q: 103.6, c1: 109.0, c2: 103.5 },
+            { name: "Halvor Egner Granerud", country: "NOR", isoCode: "no", t1: 66.4, t2: 57.9, q: 103.6, c1: 108.0, c2: 99.4 },
+            { name: "Johann Andre Forfang", country: "NOR", isoCode: "no", t1: 64.7, t2: 59.0, q: 103.4, c1: 109.0, c2: 109.8 },
+            { name: "Timi Zajc", country: "SLO", isoCode: "si", t1: 68.5, t2: 63.4, q: 103.2, c1: 112.0, c2: 108.1 },
+            { name: "Paweł Wąsek", country: "POL", isoCode: "pl", t1: 63.3, t2: 58.2, q: 102.6, c1: 108.4, c2: 105.8 },
+            { name: "Ryoyu Kobayashi", country: "JPN", isoCode: "jp", t1: 0, t2: 64.8, q: 102.5, c1: 120.1, c2: 117.4 },
+            { name: "Felix Trunz", country: "SUI", isoCode: "ch", t1: 63.4, t2: 60.3, q: 102.4, c1: 104.6, c2: 0 },
+            { name: "Tate Frantz", country: "USA", isoCode: "us", t1: 67.5, t2: 57.4, q: 101.9, c1: 108.1, c2: 104.6 },
+            { name: "Andreas Wellinger", country: "GER", isoCode: "de", t1: 57.4, t2: 52.8, q: 101.6, c1: 114.7, c2: 109.2 },
+            { name: "Vilho Palosaari", country: "FIN", isoCode: "fi", t1: 59.5, t2: 54.3, q: 101.2, c1: 105.7, c2: 0 },
+            { name: "Benjamin Oestvold", country: "NOR", isoCode: "no", t1: 70.7, t2: 60.0, q: 100.1, c1: 107.0, c2: 0 },
+            { name: "Jules Chervet", country: "FRA", isoCode: "fr", t1: 58.8, t2: 54.0, q: 99.9, c1: 104.0, c2: 0 },
+            { name: "Vitaliy Kalinichenko", country: "UKR", isoCode: "ua", t1: 48.5, t2: 54.8, q: 99.7, c1: 97.6, c2: 0 },
+            { name: "Danil Vassilyev", country: "KAZ", isoCode: "kz", t1: 54.6, t2: 51.9, q: 99.7, c1: 105.2, c2: 0 },
+            { name: "Karl Geiger", country: "GER", isoCode: "de", t1: 53.4, t2: 44.2, q: 99.0, c1: 97.6, c2: 0 },
+            { name: "Aleksander Zniszczoł", country: "POL", isoCode: "pl", t1: 62.1, t2: 48.5, q: 98.7, c1: 107.8, c2: 0 },
+            { name: "Sakutaro Kobayashi", country: "JPN", isoCode: "jp", t1: 0, t2: 52.2, q: 98.4, c1: 100.0, c2: 0 },
+            { name: "Simon Ammann", country: "SUI", isoCode: "ch", t1: 0, t2: 57.0, q: 98.0, c1: 106.8, c2: 0 },
+            { name: "Hektor Kapustik", country: "SVK", isoCode: "sk", t1: 50.0, t2: 40.5, q: 97.9, c1: 99.6, c2: 0 },
+            { name: "Piotr Żyła", country: "POL", isoCode: "pl", t1: 62.9, t2: 56.7, q: 97.6, c1: 106.5, c2: 0 },
+            { name: "Domen Prevc", country: "SLO", isoCode: "si", t1: 70.8, t2: 68.5, q: 97.6, c1: 113.6, c2: 117.1 },
+            { name: "Mackenzie Boyd-Clowes", country: "CAN", isoCode: "ca", t1: 56.0, t2: 50.2, q: 97.4, c1: 104.5, c2: 0 },
+            { name: "Andrew Urlaub", country: "USA", isoCode: "us", t1: 63.1, t2: 60.9, q: 97.2, c1: 108.1, c2: 106.7 },
+            { name: "Alex Insam", country: "ITA", isoCode: "it", t1: 52.2, t2: 48.1, q: 97.1, c1: 96.5, c2: 0 },
+            { name: "Vladimir Zografski", country: "BUL", isoCode: "bg", t1: 62.9, t2: 59.4, q: 96.8, c1: 119.9, c2: 114.8 },
+            { name: "Juri Kesseli", country: "SUI", isoCode: "ch", t1: 61.9, t2: 49.4, q: 96.3, c1: 99.5, c2: 0 },
+            { name: "Ilja Miziernykh", country: "KAZ", isoCode: "kz", t1: 45.8, t2: 42.6, q: 95.1, c1: 0, c2: 0 },
+            { name: "Kevin Bickner", country: "USA", isoCode: "us", t1: 54.8, t2: 48.5, q: 94.8, c1: 0, c2: 0 },
+            { name: "Valentin Foubert", country: "FRA", isoCode: "fr", t1: 68.4, t2: 63.7, q: 94.3, c1: 0, c2: 0 },
+            { name: "Francesco Cecon", country: "ITA", isoCode: "it", t1: 58.3, t2: 52.1, q: 92.3, c1: 0, c2: 0 },
+            { name: "Giovanni Bresadola", country: "ITA", isoCode: "it", t1: 54.1, t2: 51.4, q: 91.7, c1: 0, c2: 0 },
+            { name: "Louis Obersteiner", country: "AUT", isoCode: "at", t1: 42.7, t2: 42.0, q: 91.4, c1: 0, c2: 0 },
+            { name: "Lovro Kos", country: "SLO", isoCode: "si", t1: 53.0, t2: 50.2, q: 89.2, c1: 0, c2: 0 },
+            { name: "Daniel Andrei Cacina", country: "ROU", isoCode: "ro", t1: 51.9, t2: 46.2, q: 89.0, c1: 0, c2: 0 },
+            { name: "Fatih Arda Ipcioglu", country: "TUR", isoCode: "tr", t1: 49.4, t2: 40.6, q: 88.8, c1: 0, c2: 0 },
+            { name: "Roman Koudelka", country: "CZE", isoCode: "cz", t1: 54.8, t2: 50.6, q: 88.8, c1: 0, c2: 0 },
+            { name: "Kasperi Valto", country: "FIN", isoCode: "fi", t1: 50.7, t2: 44.9, q: 87.9, c1: 0, c2: 0 },
+            { name: "Yevhen Marusiak", country: "UKR", isoCode: "ua", t1: 39.5, t2: 39.3, q: 85.6, c1: 0, c2: 0 },
+            { name: "Yixin Lyu", country: "CHN", isoCode: "cn", t1: 45.3, t2: 43.5, q: 83.4, c1: 0, c2: 0 },
+            { name: "Mihnea Alexandru Spulber", country: "ROU", isoCode: "ro", t1: 47.0, t2: 40.4, q: 82.4, c1: 0, c2: 0 },
+            { name: "Muhammed Ali Bedir", country: "TUR", isoCode: "tr", t1: 40.9, t2: 36.7, q: 80.2, c1: 0, c2: 0 },
+            { name: "Weijie Zhen", country: "CHN", isoCode: "cn", t1: 36.3, t2: 34.6, q: 80.1, c1: 0, c2: 0 },
+            { name: "Svyatoslav Nazarenko", country: "KAZ", isoCode: "kz", t1: 43.2, t2: 38.0, q: 78.8, c1: 0, c2: 0 },
+            { name: "Kristoffer E. Sundal", country: "NOR", isoCode: "no", t1: 73.2, t2: 68.6, q: 0, c1: 0, c2: 0 }
+        ];
+
+        // --- DANE ZAWODNIKÓW PŚ 2024/25 (Stare dane) ---
+        const WC_2425_DATA = [
             { rank: 1, name: "Daniel Tschofenig", country: "AUT", isoCode: "at", points: 1805 },
             { rank: 2, name: "Jan Hoerl", country: "AUT", isoCode: "at", points: 1652 },
             { rank: 3, name: "Stefan Kraft", country: "AUT", isoCode: "at", points: 1290 },
@@ -182,6 +254,50 @@
             { rank: 48, name: "Robert Johansson", country: "NOR", isoCode: "no", points: 32 },
             { rank: 49, name: "Niko Kytosaho", country: "FIN", isoCode: "fi", points: 28 },
             { rank: 50, name: "Felix Hoffmann", country: "GER", isoCode: "de", points: 27 }
+        ];
+
+        // --- DANE ZAWODNIKÓW PŚ 2025/26 (ZAKTUALIZOWANE NA PODSTAWIE ZDJĘCIA) ---
+        const WC_2526_DATA = [
+            { rank: 1, name: "Stefan Kraft", country: "AUT", isoCode: "at", points: 205 },
+            { rank: 2, name: "Ryoyu Kobayashi", country: "JPN", isoCode: "jp", points: 181 },
+            { rank: 3, name: "Daniel Tschofenig", country: "AUT", isoCode: "at", points: 176 },
+            { rank: 4, name: "Jan Hoerl", country: "AUT", isoCode: "at", points: 157 },
+            { rank: 5, name: "Anze Lanisek", country: "SLO", isoCode: "si", points: 156 },
+            { rank: 6, name: "Philipp Raimund", country: "GER", isoCode: "de", points: 150 },
+            { rank: 6, name: "Domen Prevc", country: "SLO", isoCode: "si", points: 150 },
+            { rank: 8, name: "Felix Hoffmann", country: "GER", isoCode: "de", points: 118 },
+            { rank: 9, name: "Stephan Embacher", country: "AUT", isoCode: "at", points: 103 },
+            { rank: 10, name: "Ren Nikaido", country: "JPN", isoCode: "jp", points: 61 },
+            { rank: 11, name: "Manuel Fettner", country: "AUT", isoCode: "at", points: 59 },
+            { rank: 11, name: "Timi Zajc", country: "SLO", isoCode: "si", points: 59 },
+            { rank: 13, name: "Kamil Stoch", country: "POL", isoCode: "pl", points: 58 },
+            { rank: 13, name: "Vladimir Zografski", country: "BUL", isoCode: "bg", points: 58 },
+            { rank: 15, name: "Marius Lindvik", country: "NOR", isoCode: "no", points: 55 },
+            { rank: 16, name: "Artti Aigro", country: "EST", isoCode: "ee", points: 45 },
+            { rank: 16, name: "Naoki Nakamura", country: "JPN", isoCode: "jp", points: 45 },
+            { rank: 18, name: "Kacper Tomasiak", country: "POL", isoCode: "pl", points: 44 },
+            { rank: 19, name: "Maximilian Ortner", country: "AUT", isoCode: "at", points: 36 },
+            { rank: 20, name: "Gregor Deschwanden", country: "SUI", isoCode: "ch", points: 30 },
+            { rank: 21, name: "Antti Aalto", country: "FIN", isoCode: "fi", points: 28 },
+            { rank: 22, name: "Valentin Foubert", country: "FRA", isoCode: "fr", points: 21 },
+            { rank: 23, name: "Dawid Kubacki", country: "POL", isoCode: "pl", points: 20 },
+            { rank: 24, name: "Sakutaro Kobayashi", country: "JPN", isoCode: "jp", points: 17 },
+            { rank: 24, name: "Pius Paschke", country: "GER", isoCode: "de", points: 17 },
+            { rank: 26, name: "Jason Colby", country: "USA", isoCode: "us", points: 15 },
+            { rank: 27, name: "Piotr Żyła", country: "POL", isoCode: "pl", points: 12 },
+            { rank: 27, name: "Andreas Wellinger", country: "GER", isoCode: "de", points: 12 },
+            { rank: 27, name: "Kristoffer E. Sundal", country: "NOR", isoCode: "no", points: 12 },
+            { rank: 30, name: "Rok Oblak", country: "SLO", isoCode: "si", points: 10 },
+            { rank: 31, name: "Karl Geiger", country: "GER", isoCode: "de", points: 8 },
+            { rank: 32, name: "Paweł Wąsek", country: "POL", isoCode: "pl", points: 7 },
+            { rank: 32, name: "Johann Andre Forfang", country: "NOR", isoCode: "no", points: 7 },
+            { rank: 34, name: "Halvor Egner Granerud", country: "NOR", isoCode: "no", points: 6 },
+            { rank: 35, name: "Andrew Urlaub", country: "USA", isoCode: "us", points: 5 },
+            { rank: 36, name: "Benjamin Oestvold", country: "NOR", isoCode: "no", points: 4 },
+            { rank: 37, name: "Tate Frantz", country: "USA", isoCode: "us", points: 3 },
+            { rank: 38, name: "Yukiya Sato", country: "JPN", isoCode: "jp", points: 2 },
+            { rank: 38, name: "Juri Kesseli", country: "SUI", isoCode: "ch", points: 2 },
+            { rank: 40, name: "Tomofumi Naito", country: "JPN", isoCode: "jp", points: 1 }
         ];
 
         // --- DANE LGP 2025 ---
@@ -251,7 +367,8 @@
             { name: "Jakub Wolny", country: "POL", isoCode: "pl", points: 15 },
         ];
 
-        const EVENTS = {
+        // Definicja eventów (kolumn) dla Lillehammer
+        const LILLEHAMMER_EVENTS = {
             t1: { id: 't1', label: "T1 (Pt)", full: "1. Trening", color: "text-slate-500", group: "training" },
             t2: { id: 't2', label: "T2 (Pt)", full: "2. Trening", color: "text-slate-500", group: "training" },
             m1: { id: 'm1', label: "M1 (Mix)", full: "Mikst (1. Seria)", color: "text-purple-600", group: "mix" },
@@ -264,6 +381,52 @@
             c2_2: { id: 'c2_2', label: "C2-2 (Ndz)", full: "Konkurs Niedziela (Finał)", color: "text-blue-700 font-bold", group: "comp" },
         };
 
+        const FALUN_EVENTS = {
+            t1: { id: 't1', label: "T1 (Wt)", full: "1. Trening", color: "text-slate-500", group: "training" },
+            t2: { id: 't2', label: "T2 (Wt)", full: "2. Trening", color: "text-slate-500", group: "training" },
+            q:  { id: 'q',  label: "Q (Wt)",  full: "Kwalifikacje", color: "text-blue-600", group: "quali" },
+            c1: { id: 'c1', label: "C1 (Wt)", full: "Konkurs (1. Seria)", color: "text-blue-700 font-bold", group: "comp" },
+            c2: { id: 'c2', label: "C2 (Wt)", full: "Konkurs (Finał)", color: "text-blue-700 font-bold", group: "comp" },
+        };
+
+        // Zdefiniuj eventy dla połączonego widoku, prefiksując je aby uniknąć konfliktów
+        const ALL_COMPETITIONS_EVENTS = {
+            // Lillehammer
+            lille_t1: { id: 'lille_t1', label: "Lil T1", full: "Lillehammer - 1. Trening", color: "text-slate-500", group: "lillehammer" },
+            lille_t2: { id: 'lille_t2', label: "Lil T2", full: "Lillehammer - 2. Trening", color: "text-slate-500", group: "lillehammer" },
+            lille_m1: { id: 'lille_m1', label: "Lil M1", full: "Lillehammer - Mikst (1. Seria)", color: "text-purple-600", group: "lillehammer" },
+            lille_m2: { id: 'lille_m2', label: "Lil M2", full: "Lillehammer - Mikst (Finał)", color: "text-purple-600", group: "lillehammer" },
+            lille_q1: { id: 'lille_q1', label: "Lil Q1", full: "Lillehammer - Kwalifikacje Sob", color: "text-blue-600", group: "lillehammer" },
+            lille_c1_1: { id: 'lille_c1_1', label: "Lil C1-1", full: "Lillehammer - Konkurs Sob (1. Seria)", color: "text-blue-700 font-bold", group: "lillehammer" },
+            lille_c1_2: { id: 'lille_c1_2', label: "Lil C1-2", full: "Lillehammer - Konkurs Sob (Finał)", color: "text-blue-700 font-bold", group: "lillehammer" },
+            lille_q2: { id: 'lille_q2', label: "Lil Q2", full: "Lillehammer - Kwalifikacje Ndz", color: "text-blue-600", group: "lillehammer" },
+            lille_c2_1: { id: 'lille_c2_1', label: "Lil C2-1", full: "Lillehammer - Konkurs Ndz (1. Seria)", color: "text-blue-700 font-bold", group: "lillehammer" },
+            lille_c2_2: { id: 'lille_c2_2', label: "Lil C2-2", full: "Lillehammer - Konkurs Ndz (Finał)", color: "text-blue-700 font-bold", group: "lillehammer" },
+            
+            // Falun
+            falun_t1: { id: 'falun_t1', label: "Fal T1", full: "Falun - 1. Trening", color: "text-slate-500", group: "falun" },
+            falun_t2: { id: 'falun_t2', label: "Fal T2", full: "Falun - 2. Trening", color: "text-slate-500", group: "falun" },
+            falun_q: { id: 'falun_q', label: "Fal Q", full: "Falun - Kwalifikacje", color: "text-blue-600", group: "falun" },
+            falun_c1: { id: 'falun_c1', label: "Fal C1", full: "Falun - Konkurs (1. Seria)", color: "text-blue-700 font-bold", group: "falun" },
+            falun_c2: { id: 'falun_c2', label: "Fal C2", full: "Falun - Konkurs (Finał)", color: "text-blue-700 font-bold", group: "falun" },
+        };
+
+        // KONFIGURACJA ZAWODÓW
+        const EVENTS_CONFIG = {
+            lillehammer: {
+                label: "Lillehammer HS 140 (K-123) - 23.11.2025",
+                data: LILLEHAMMER_DATA,
+                columns: LILLEHAMMER_EVENTS,
+                defaultCols: ['c1_1', 'c1_2', 'c2_1', 'c2_2']
+            },
+            falun: {
+                label: "Falun HS 95 (K-90) - 25.11.2025",
+                data: FALUN_DATA,
+                columns: FALUN_EVENTS,
+                defaultCols: ['c1', 'c2']
+            }
+        };
+
         // Lista zawodników wybranych w Fantasy Draft
         const DRAFT_PLAYERS = [
             "Stefan Kraft", "Philipp Raimund", "Felix Hoffmann", "Sakutaro Kobayashi", "Antti Aalto", "Artti Aigro",
@@ -272,9 +435,6 @@
             "Daniel Tschofenig", "Stephan Embacher", "Andreas Wellinger", "Domen Prevc", "Gregor Deschwanden", "Kacper Tomasiak",
             "Johann Andre Forfang", "Naoki Nakamura"
         ];
-
-        const ALL_EVENT_KEYS = Object.keys(EVENTS);
-        const DEFAULT_COLUMNS = ['c1_1', 'c1_2', 'c2_1', 'c2_2'];
 
         const calculateDraftPointsFromMap = (skierMap, sortKey) => {
             const sorted = Object.values(skierMap)
@@ -305,10 +465,12 @@
         };
 
         function SkiJumpingApp() {
-            const [activeTab, setActiveTab] = useState('lillehammer'); 
+            const [activeTab, setActiveTab] = useState('results'); // 'results', 'wc2425', 'wc2526', 'lgp2025', 'all_competitions'
+            const [activeEventId, setActiveEventId] = useState('lillehammer'); 
+            
             const [minJumps, setMinJumps] = useState(0);
             const [searchTerm, setSearchTerm] = useState("");
-            const [sortBy, setSortBy] = useState('customSum'); // Domyślne sortowanie: Wybór Σ
+            const [sortBy, setSortBy] = useState('customSum'); 
             const [sortDirection, setSortDirection] = useState('desc');
             const [showDraftHighlight, setShowDraftHighlight] = useState(true);
             const [onlyDraft, setOnlyDraft] = useState(false);
@@ -316,15 +478,46 @@
             const [showDraftColumn, setShowDraftColumn] = useState(false);
             const [showBestNColumn, setShowBestNColumn] = useState(false);
             
-            const [selectedColumns, setSelectedColumns] = useState(DEFAULT_COLUMNS);
+            // STATE FOR SELECTIONS PER EVENT
+            const [selectionsByEvent, setSelectionsByEvent] = useState({
+                lillehammer: EVENTS_CONFIG.lillehammer.defaultCols,
+                falun: EVENTS_CONFIG.falun.defaultCols
+            });
+
+            // State for combined view
+            const [selectedAllColumns, setSelectedAllColumns] = useState([
+                'lille_c1_1', 'lille_c1_2', 'lille_c2_1', 'lille_c2_2',
+                'falun_c1', 'falun_c2'
+            ]);
+            const [expandedGroups, setExpandedGroups] = useState({
+                lillehammer: true,
+                falun: true
+            });
+
             const [bestN, setBestN] = useState(10);
 
+            const currentEventConfig = EVENTS_CONFIG[activeEventId];
+            const ALL_EVENT_KEYS = Object.keys(currentEventConfig.columns);
+            const ALL_COMP_KEYS = Object.keys(ALL_COMPETITIONS_EVENTS);
+
+            // Use selections from state instead of direct config default
+            const selectedColumns = selectionsByEvent[activeEventId];
+
             const activePlayersSet = useMemo(() => {
-                const set = new Set(RAW_DATA.map(p => p.name));
+                const set = new Set();
+                if (activeTab === 'results') {
+                    const currentData = EVENTS_CONFIG[activeEventId].data;
+                    currentData.forEach(p => {
+                        const hasPoints = Object.keys(EVENTS_CONFIG[activeEventId].columns).some(key => p[key] > 0);
+                        if(hasPoints) set.add(p.name);
+                    });
+                } else if (activeTab === 'all_competitions') {
+                    [...LILLEHAMMER_DATA, ...FALUN_DATA].forEach(p => set.add(p.name));
+                }
                 set.add("Wasiljew Danił");
                 set.add("Danil Vassilyev");
                 return set;
-            }, []);
+            }, [activeEventId, activeTab]);
 
             const isPlayerActive = (name) => {
                 if (activePlayersSet.has(name)) return true;
@@ -335,7 +528,7 @@
 
             // Reset sort when changing tabs
             useEffect(() => {
-                if (activeTab === 'lillehammer') {
+                if (activeTab === 'results' || activeTab === 'all_competitions') {
                     setSortBy('customSum'); 
                 } else {
                     setSortBy('points'); 
@@ -344,99 +537,209 @@
             }, [activeTab]);
 
             const toggleColumn = (key) => {
-                if (selectedColumns.includes(key)) {
-                    setSelectedColumns(prev => prev.filter(k => k !== key));
+                if (activeTab === 'all_competitions') {
+                    if (selectedAllColumns.includes(key)) {
+                        setSelectedAllColumns(prev => prev.filter(k => k !== key));
+                    } else {
+                        setSelectedAllColumns(prev => [...prev, key]);
+                    }
                 } else {
-                    setSelectedColumns(prev => [...prev, key]);
+                    setSelectionsByEvent(prev => {
+                        const currentSelections = prev[activeEventId];
+                        const newSelections = currentSelections.includes(key) 
+                            ? currentSelections.filter(k => k !== key)
+                            : [...currentSelections, key];
+                        return { ...prev, [activeEventId]: newSelections };
+                    });
                 }
             };
+
+            const toggleGroupExpand = (grp) => {
+                setExpandedGroups(prev => ({...prev, [grp]: !prev[grp]}));
+            }
 
             const selectGroup = (groupName) => {
-                if (groupName === 'all') {
-                    setSelectedColumns(ALL_EVENT_KEYS);
-                } else if (groupName === 'none') {
-                    setSelectedColumns([]);
-                } else {
-                    const groupKeys = Object.values(EVENTS).filter(e => e.group === groupName).map(e => e.id);
-                    const allSelected = groupKeys.every(k => selectedColumns.includes(k));
-                    if (allSelected) {
-                        setSelectedColumns(prev => prev.filter(k => !groupKeys.includes(k)));
-                    } else {
-                        const newSet = new Set([...selectedColumns, ...groupKeys]);
-                        setSelectedColumns(Array.from(newSet));
+                if (activeTab === 'all_competitions') {
+                    if (groupName === 'none') {
+                        setSelectedAllColumns([]);
+                        return;
                     }
+                    // groupName here corresponds to 'lillehammer' or 'falun'
+                    const groupKeys = Object.values(ALL_COMPETITIONS_EVENTS)
+                        .filter(e => e.group === groupName)
+                        .map(e => e.id);
+                    
+                    const allSelected = groupKeys.every(k => selectedAllColumns.includes(k));
+                    if (allSelected) {
+                        setSelectedAllColumns(prev => prev.filter(k => !groupKeys.includes(k)));
+                    } else {
+                        // Add missing keys
+                        const newSet = new Set([...selectedAllColumns, ...groupKeys]);
+                        setSelectedAllColumns(Array.from(newSet));
+                    }
+                } else {
+                    // Single Event Logic
+                    const currentCols = currentEventConfig.columns;
+                    let newSelections = [];
+
+                    if (groupName === 'none') {
+                        newSelections = [];
+                    } else if (groupName === 'all') {
+                        newSelections = Object.keys(currentCols);
+                    } else {
+                        // Specific sub-group like 'training', 'comp'
+                        const groupKeys = Object.values(currentCols).filter(e => e.group === groupName).map(e => e.id);
+                        const currentSelections = selectionsByEvent[activeEventId];
+                        const allSelected = groupKeys.every(k => currentSelections.includes(k));
+                        
+                        if (allSelected) {
+                            newSelections = currentSelections.filter(k => !groupKeys.includes(k));
+                        } else {
+                            const set = new Set([...currentSelections, ...groupKeys]);
+                            newSelections = Array.from(set);
+                        }
+                    }
+                    setSelectionsByEvent(prev => ({ ...prev, [activeEventId]: newSelections }));
                 }
             };
 
-            // --- KOLEJNOŚĆ EFEKTÓW DLA POPRAWNEGO SORTOWANIA NA STARCIE ---
+            // Auto-sort effects
             useEffect(() => {
-                if (activeTab === 'lillehammer') {
+                if (activeTab === 'results' || activeTab === 'all_competitions') {
                     setSortBy('bestNSum');
                     setSortDirection('desc');
                 }
             }, [bestN, activeTab]);
 
             useEffect(() => {
-                if (activeTab === 'lillehammer') {
+                if (activeTab === 'results' || activeTab === 'all_competitions') {
                     setSortBy('customSum');
                     setSortDirection('desc');
                 }
-            }, [selectedColumns, activeTab]);
+            }, [selectedColumns, selectedAllColumns, activeTab]);
 
             const processedData = useMemo(() => {
-                const skiersMap = {};
-                RAW_DATA.forEach(skier => {
-                    const satTotal = (skier.c1_1 || 0) + (skier.c1_2 || 0);
-                    const sunTotal = (skier.c2_1 || 0) + (skier.c2_2 || 0);
-                    skiersMap[skier.name] = { ...skier, satTotal, sunTotal };
-                });
+                if (activeTab === 'all_competitions') {
+                    const allPlayerNames = new Set([...LILLEHAMMER_DATA.map(p => p.name), ...FALUN_DATA.map(p => p.name)]);
+                    const skiersMap = {};
 
-                const satDraftPoints = calculateDraftPointsFromMap(skiersMap, 'satTotal');
-                const sunDraftPoints = calculateDraftPointsFromMap(skiersMap, 'sunTotal');
+                    allPlayerNames.forEach(name => {
+                        const lilleData = LILLEHAMMER_DATA.find(p => p.name === name) || {};
+                        const falunData = FALUN_DATA.find(p => p.name === name) || {};
+                        const country = lilleData.country || falunData.country || "N/A";
+                        const isoCode = lilleData.isoCode || falunData.isoCode || "xx";
 
-                return Object.values(skiersMap).map(skier => {
-                    let totalPoints = 0;
-                    let seriesCount = 0;
-                    let scores = [];
-                    let customSum = 0;
+                        const merged = {
+                            name, country, isoCode,
+                            lille_t1: lilleData.t1 || 0, lille_t2: lilleData.t2 || 0,
+                            lille_m1: lilleData.m1 || 0, lille_m2: lilleData.m2 || 0,
+                            lille_q1: lilleData.q1 || 0, lille_c1_1: lilleData.c1_1 || 0,
+                            lille_c1_2: lilleData.c1_2 || 0, lille_q2: lilleData.q2 || 0,
+                            lille_c2_1: lilleData.c2_1 || 0, lille_c2_2: lilleData.c2_2 || 0,
+                            falun_t1: falunData.t1 || 0, falun_t2: falunData.t2 || 0,
+                            falun_q: falunData.q || 0, falun_c1: falunData.c1 || 0,
+                            falun_c2: falunData.c2 || 0,
+                        };
+                        skiersMap[name] = merged;
+                    });
 
-                    const isDraft = DRAFT_PLAYERS.includes(skier.name);
+                    return Object.values(skiersMap).map(skier => {
+                        let totalPoints = 0;
+                        let seriesCount = 0;
+                        let scores = [];
+                        let customSum = 0;
+                        const isDraft = DRAFT_PLAYERS.includes(skier.name);
 
-                    ALL_EVENT_KEYS.forEach(key => {
-                        const points = skier[key] || 0;
-                        if (points > 0) {
-                            totalPoints += points;
-                            seriesCount += 1;
-                            scores.push({ key, points });
+                        ALL_COMP_KEYS.forEach(key => {
+                            const points = skier[key] || 0;
+                            if (points > 0) {
+                                totalPoints += points;
+                                seriesCount += 1;
+                                scores.push({ key, points });
+                            }
+                        });
+
+                        selectedAllColumns.forEach(key => {
+                            customSum += (skier[key] || 0);
+                        });
+
+                        const sortedScores = [...scores].sort((a, b) => b.points - a.points);
+                        const bestNSum = sortedScores.slice(0, bestN).reduce((sum, item) => sum + item.points, 0);
+
+                        return {
+                            ...skier,
+                            totalPoints: parseFloat(totalPoints.toFixed(1)),
+                            seriesCount,
+                            customSum: parseFloat(customSum.toFixed(1)),
+                            bestNSum: parseFloat(bestNSum.toFixed(1)),
+                            isDraft,
+                            draftTotal: 0
+                        };
+                    });
+
+                } else {
+                    // Single Event Logic
+                    const rawData = currentEventConfig.data;
+                    const skiersMap = {};
+                    
+                    rawData.forEach(skier => {
+                        let satTotal = 0;
+                        let sunTotal = 0;
+                        if (activeEventId === 'lillehammer') {
+                            satTotal = (skier.c1_1 || 0) + (skier.c1_2 || 0);
+                            sunTotal = (skier.c2_1 || 0) + (skier.c2_2 || 0);
+                        } else if (activeEventId === 'falun') {
+                            sunTotal = (skier.c1 || 0) + (skier.c2 || 0);
                         }
+                        skiersMap[skier.name] = { ...skier, satTotal, sunTotal };
                     });
 
-                    selectedColumns.forEach(key => {
-                        customSum += (skier[key] || 0);
+                    const satDraftPoints = calculateDraftPointsFromMap(skiersMap, 'satTotal');
+                    const sunDraftPoints = calculateDraftPointsFromMap(skiersMap, 'sunTotal');
+
+                    return Object.values(skiersMap).map(skier => {
+                        let totalPoints = 0;
+                        let seriesCount = 0;
+                        let scores = [];
+                        let customSum = 0;
+                        const isDraft = DRAFT_PLAYERS.includes(skier.name);
+
+                        ALL_EVENT_KEYS.forEach(key => {
+                            const points = skier[key] || 0;
+                            if (points > 0) {
+                                totalPoints += points;
+                                seriesCount += 1;
+                                scores.push({ key, points });
+                            }
+                        });
+
+                        selectedColumns.forEach(key => {
+                            customSum += (skier[key] || 0);
+                        });
+
+                        const sortedScores = [...scores].sort((a, b) => b.points - a.points);
+                        const bestNSum = sortedScores.slice(0, bestN).reduce((sum, item) => sum + item.points, 0);
+                        const avgPoints = seriesCount > 0 ? (totalPoints / seriesCount).toFixed(1) : 0;
+
+                        const draftPtsSat = satDraftPoints[skier.name] || 0;
+                        const draftPtsSun = sunDraftPoints[skier.name] || 0;
+                        let draftTotal = (draftMode === 'weekend') ? (draftPtsSat + draftPtsSun) : draftPtsSun;
+
+                        return {
+                            ...skier,
+                            totalPoints: parseFloat(totalPoints.toFixed(1)),
+                            seriesCount,
+                            avgPoints: parseFloat(avgPoints),
+                            customSum: parseFloat(customSum.toFixed(1)),
+                            bestNSum: parseFloat(bestNSum.toFixed(1)),
+                            isDraft,
+                            draftTotal,
+                            draftPtsSat,
+                            draftPtsSun
+                        };
                     });
-
-                    const sortedScores = [...scores].sort((a, b) => b.points - a.points);
-                    const bestNSum = sortedScores.slice(0, bestN).reduce((sum, item) => sum + item.points, 0);
-                    const avgPoints = seriesCount > 0 ? (totalPoints / seriesCount).toFixed(1) : 0;
-
-                    const draftPtsSat = satDraftPoints[skier.name] || 0;
-                    const draftPtsSun = sunDraftPoints[skier.name] || 0;
-                    const draftTotal = draftMode === 'weekend' ? (draftPtsSat + draftPtsSun) : draftPtsSun;
-
-                    return {
-                        ...skier,
-                        totalPoints: parseFloat(totalPoints.toFixed(1)),
-                        seriesCount,
-                        avgPoints: parseFloat(avgPoints),
-                        customSum: parseFloat(customSum.toFixed(1)),
-                        bestNSum: parseFloat(bestNSum.toFixed(1)),
-                        isDraft,
-                        draftTotal,
-                        draftPtsSat,
-                        draftPtsSun
-                    };
-                });
-            }, [selectedColumns, bestN, draftMode]);
+                }
+            }, [selectedColumns, selectedAllColumns, bestN, draftMode, activeEventId, currentEventConfig, activeTab]);
 
             const processExternalData = (data) => {
                 return data.map(skier => {
@@ -446,7 +749,8 @@
                 });
             };
 
-            const processedWCData = useMemo(() => processExternalData(WC_2025_DATA), [activePlayersSet]);
+            const processedWC2425Data = useMemo(() => processExternalData(WC_2425_DATA), [activePlayersSet]);
+            const processedWC2526Data = useMemo(() => processExternalData(WC_2526_DATA), [activePlayersSet]);
             const processedLGPData = useMemo(() => processExternalData(LGP_2025_DATA), [activePlayersSet]);
 
             const getFilteredData = (data, isExternal = false) => {
@@ -455,6 +759,7 @@
                                           skier.country.toLowerCase().includes(searchTerm.toLowerCase());
                     const matchesDraft = onlyDraft ? skier.isDraft : true;
                     if (isExternal) return matchesSearch && matchesDraft;
+                    if (activeTab === 'all_competitions') return matchesSearch && matchesDraft && (skier.seriesCount >= minJumps);
                     return matchesSearch && matchesDraft && skier.seriesCount >= minJumps;
                 });
 
@@ -481,9 +786,20 @@
             };
 
             let displayData = [];
-            if (activeTab === 'lillehammer') displayData = getFilteredData(processedData);
-            else if (activeTab === 'wc2425') displayData = getFilteredData(processedWCData, true);
-            else if (activeTab === 'lgp2025') displayData = getFilteredData(processedLGPData, true);
+            let activeTabTitle = "";
+            
+            if (activeTab === 'results' || activeTab === 'all_competitions') {
+                displayData = getFilteredData(processedData);
+            } else if (activeTab === 'wc2425') {
+                displayData = getFilteredData(processedWC2425Data, true);
+                activeTabTitle = "Puchar Świata 2024/25";
+            } else if (activeTab === 'wc2526') {
+                displayData = getFilteredData(processedWC2526Data, true);
+                activeTabTitle = "Puchar Świata 2025/26";
+            } else if (activeTab === 'lgp2025') {
+                displayData = getFilteredData(processedLGPData, true);
+                activeTabTitle = "Letnie Grand Prix 2025";
+            }
 
             const handleSort = (key) => {
                 if (sortBy === key) {
@@ -495,7 +811,7 @@
             };
 
             const getRowStyle = (skier) => {
-                if (activeTab !== 'lillehammer' && !skier.isActive) {
+                if (activeTab !== 'results' && activeTab !== 'all_competitions' && !skier.isActive) {
                     return "bg-red-100 border-red-300 text-red-900 hover:bg-red-200 transition-colors font-medium";
                 }
                 if (showDraftHighlight && skier.isDraft) {
@@ -523,11 +839,11 @@
                                 <div className="flex items-center gap-2 md:gap-3 mb-2">
                                     <span className="px-2 py-0.5 md:px-3 md:py-1 bg-blue-600 text-white text-[10px] md:text-xs font-bold rounded-full tracking-wider uppercase">Sezon 2025/26</span>
                                     <span className="text-slate-500 text-xs md:text-sm font-medium flex items-center gap-1">
-                                        <Calendar size={14} /> 21-23 Listopada 2025
+                                        <Calendar size={14} /> 21-25 Listopada 2025
                                     </span>
                                 </div>
                                 <h1 className="text-2xl md:text-3xl font-extrabold text-slate-900 mb-1 leading-tight">
-                                    Lillehammer Opening
+                                    Skoki Narciarskie 2025
                                 </h1>
                                 <p className="text-slate-500 text-xs md:text-sm max-w-xl">
                                     Pełne zestawienie wyników z wyróżnieniem Fantasy Draft.
@@ -537,16 +853,28 @@
 
                         <div className="flex gap-2 mt-6 border-b border-slate-100 pb-1 overflow-x-auto no-scrollbar">
                             <button 
-                                onClick={() => setActiveTab('lillehammer')}
-                                className={`px-4 py-2 text-sm font-bold rounded-t-lg transition-all flex items-center gap-2 whitespace-nowrap ${activeTab === 'lillehammer' ? 'bg-slate-100 text-blue-600 border-b-2 border-blue-600' : 'text-slate-400 hover:text-slate-600'}`}
+                                onClick={() => setActiveTab('results')}
+                                className={`px-4 py-2 text-sm font-bold rounded-t-lg transition-all flex items-center gap-2 whitespace-nowrap ${activeTab === 'results' ? 'bg-slate-100 text-blue-600 border-b-2 border-blue-600' : 'text-slate-400 hover:text-slate-600'}`}
                             >
-                                <Snowflake size={16}/> Wyniki Lillehammer
+                                <Snowflake size={16}/> Wyniki
                             </button>
                             <button 
+                                onClick={() => setActiveTab('all_competitions')}
+                                className={`px-4 py-2 text-sm font-bold rounded-t-lg transition-all flex items-center gap-2 whitespace-nowrap ${activeTab === 'all_competitions' ? 'bg-slate-100 text-blue-600 border-b-2 border-blue-600' : 'text-slate-400 hover:text-slate-600'}`}
+                            >
+                                <Trophy size={16}/> Wszystkie Konkursy
+                            </button>
+                            <button 
+                                onClick={() => setActiveTab('wc2526')}
+                                className={`px-4 py-2 text-sm font-bold rounded-t-lg transition-all flex items-center gap-2 whitespace-nowrap ${activeTab === 'wc2526' ? 'bg-slate-100 text-blue-600 border-b-2 border-blue-600' : 'text-slate-400 hover:text-slate-600'}`}
+                            >
+                                <Globe size={16}/> PŚ 25/26
+                            </button>
+                             <button 
                                 onClick={() => setActiveTab('wc2425')}
                                 className={`px-4 py-2 text-sm font-bold rounded-t-lg transition-all flex items-center gap-2 whitespace-nowrap ${activeTab === 'wc2425' ? 'bg-slate-100 text-blue-600 border-b-2 border-blue-600' : 'text-slate-400 hover:text-slate-600'}`}
                             >
-                                <Globe size={16}/> Puchar Świata 24/25
+                                <Globe size={16}/> PŚ 24/25
                             </button>
                             <button 
                                 onClick={() => setActiveTab('lgp2025')}
@@ -559,6 +887,31 @@
 
                     <div className="max-w-[1600px] mx-auto mb-4 grid grid-cols-1 lg:grid-cols-12 gap-4">
                         <div className="lg:col-span-3 space-y-3">
+                           
+                           {activeTab === 'results' && (
+                                <div className="bg-white p-3 rounded-xl border border-slate-200 shadow-sm">
+                                    <div className="flex items-center gap-2 mb-2 text-slate-400 text-xs font-bold uppercase">
+                                        <MapPin size={14}/> Wybierz Zawody
+                                    </div>
+                                    <div className="relative">
+                                        <select 
+                                            value={activeEventId}
+                                            onChange={(e) => setActiveEventId(e.target.value)}
+                                            className="w-full appearance-none bg-slate-50 border border-slate-200 text-slate-700 font-bold text-sm rounded-lg py-2 px-3 pr-8 leading-tight focus:outline-none focus:bg-white focus:border-blue-500"
+                                        >
+                                            <option value="lillehammer">Lillehammer HS 140 (K-123)</option>
+                                            <option value="falun">Falun HS 95 (K-90)</option>
+                                        </select>
+                                        <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-slate-700">
+                                            <ChevronDown size={16} />
+                                        </div>
+                                    </div>
+                                    <div className="mt-2 text-[10px] text-slate-400 text-center font-mono">
+                                        {currentEventConfig.label}
+                                    </div>
+                                </div>
+                           )}
+
                            <div className="bg-gradient-to-br from-indigo-50 to-blue-50 p-3 rounded-xl border border-indigo-200 shadow-sm">
                                 <div className="flex items-center gap-2 mb-3 text-indigo-800 text-xs font-bold uppercase">
                                     <Star size={14} fill="currentColor" /> Fantasy Draft
@@ -580,7 +933,7 @@
                                         <span className="text-sm font-bold">{onlyDraft ? 'Pokazujesz tylko Draft' : 'Pokaż tylko Draft'}</span>
                                     </button>
 
-                                    {activeTab === 'lillehammer' && (
+                                    {activeTab === 'results' && (
                                         <>
                                             <div className="pt-2 border-t border-indigo-100 mt-2">
                                                 <div className="text-[10px] text-indigo-400 font-bold uppercase mb-1">Widoczność:</div>
@@ -597,8 +950,8 @@
                                             <div className="pt-2 border-t border-indigo-100 mt-2">
                                                 <div className="text-[10px] text-indigo-400 font-bold uppercase mb-1">Tryb obliczeń Draftu:</div>
                                                 <div className="flex bg-white rounded-lg p-1 border border-indigo-100">
-                                                    <button onClick={() => setDraftMode('sunday')} className={`flex-1 py-1 text-[10px] font-bold rounded transition-all ${draftMode === 'sunday' ? 'bg-indigo-100 text-indigo-700' : 'text-slate-400'}`}>Niedziela</button>
-                                                    <button onClick={() => setDraftMode('weekend')} className={`flex-1 py-1 text-[10px] font-bold rounded transition-all ${draftMode === 'weekend' ? 'bg-indigo-100 text-indigo-700' : 'text-slate-400'}`}>Sob + Ndz</button>
+                                                    <button onClick={() => setDraftMode('sunday')} className={`flex-1 py-1 text-[10px] font-bold rounded transition-all ${draftMode === 'sunday' ? 'bg-indigo-100 text-indigo-700' : 'text-slate-400'}`}>Niedz/Główny</button>
+                                                    <button onClick={() => setDraftMode('weekend')} className={`flex-1 py-1 text-[10px] font-bold rounded transition-all ${draftMode === 'weekend' ? 'bg-indigo-100 text-indigo-700' : 'text-slate-400'}`}>Weekend</button>
                                                 </div>
                                             </div>
                                         </>
@@ -619,7 +972,7 @@
                                 />
                            </div>
 
-                           {activeTab === 'lillehammer' && (
+                           {(activeTab === 'results' || activeTab === 'all_competitions') && (
                              <div className="bg-white p-3 rounded-xl border border-slate-200 shadow-sm">
                                     <div className="flex items-center gap-2 mb-2 text-slate-400 text-xs font-bold uppercase">
                                         <Filter size={14}/> Min. zaliczonych serii
@@ -640,12 +993,12 @@
                         </div>
 
                         <div className="lg:col-span-9">
-                            {activeTab === 'lillehammer' ? (
+                            {(activeTab === 'results' || activeTab === 'all_competitions') ? (
                                 <div className="bg-white rounded-xl border border-blue-200 shadow-sm p-4 relative overflow-hidden h-full">
                                    <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-400 to-purple-500"></div>
                                    <div className="flex items-center gap-2 mb-4">
                                         <Calculator className="text-blue-600" size={20} />
-                                        <h2 className="font-bold text-slate-800">Kreator Rankingu</h2>
+                                        <h2 className="font-bold text-slate-800">Kreator Rankingu {activeTab === 'all_competitions' ? 'Zbiorczego' : ''}</h2>
                                    </div>
 
                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -653,30 +1006,68 @@
                                              <div className="text-xs font-bold text-slate-500 uppercase mb-2 flex justify-between items-center">
                                                     <span>Wybierz serie do sumowania:</span>
                                                     <div className="flex gap-2 scale-90 origin-right">
-                                                         <button onClick={() => selectGroup('all')} className="text-blue-600 hover:underline font-bold">Wszystkie</button>
-                                                         <button onClick={() => selectGroup('comp')} className="text-blue-600 hover:underline font-bold">Tylko Konkursy</button>
-                                                         <button onClick={() => selectGroup('none')} className="text-slate-400 hover:underline">Żadne</button>
+                                                         <button onClick={() => selectGroup('none')} className="text-slate-400 hover:underline">Odznacz wszystko</button>
                                                     </div>
                                              </div>
-                                             <div className="flex flex-wrap gap-1.5">
-                                                    {ALL_EVENT_KEYS.map(key => {
-                                                         const evt = EVENTS[key];
-                                                         const isSelected = selectedColumns.includes(key);
-                                                         return (
-                                                                <button
-                                                                    key={key}
-                                                                    onClick={() => toggleColumn(key)}
-                                                                    className={`px-2 py-1 rounded text-[10px] font-bold border transition-all flex items-center gap-1 ${isSelected ? 'bg-blue-50 border-blue-300 text-blue-700' : 'bg-white border-slate-200 text-slate-400'}`}
-                                                                    title={evt.full}
-                                                                >
-                                                                     {isSelected ? <CheckSquare size={10}/> : <Square size={10}/>}
-                                                                     {evt.label}
-                                                                </button>
-                                                         )
-                                                    })}
-                                             </div>
+                                             
+                                             {/* RÓŻNE WIDOKI SELEKTORÓW ZALEŻNIE OD ZAKŁADKI */}
+                                             {activeTab === 'all_competitions' ? (
+                                                <div className="space-y-3 h-48 overflow-y-auto pr-2">
+                                                    {['lillehammer', 'falun'].map(grp => (
+                                                        <div key={grp} className="border-b border-slate-100 pb-2">
+                                                            <button onClick={() => toggleGroupExpand(grp)} className="w-full flex justify-between items-center mb-1 hover:bg-slate-50 p-1 rounded">
+                                                                <div className="text-[10px] font-bold text-slate-600 uppercase flex items-center gap-1">
+                                                                    {expandedGroups[grp] ? <ChevronDown size={12}/> : <ChevronRight size={12}/>} 
+                                                                    {grp}
+                                                                </div>
+                                                                <span onClick={(e) => {e.stopPropagation(); selectGroup(grp)}} className="text-[10px] text-blue-500 hover:underline cursor-pointer">Zaznacz</span>
+                                                            </button>
+                                                            
+                                                            {expandedGroups[grp] && (
+                                                                <div className="flex flex-wrap gap-1.5 pl-2">
+                                                                    {Object.values(ALL_COMPETITIONS_EVENTS).filter(e => e.group === grp).map(evt => {
+                                                                        const isSelected = selectedAllColumns.includes(evt.id);
+                                                                        return (
+                                                                            <button
+                                                                                key={evt.id}
+                                                                                onClick={() => toggleColumn(evt.id)}
+                                                                                className={`px-2 py-1 rounded text-[10px] font-bold border transition-all flex items-center gap-1 ${isSelected ? 'bg-blue-50 border-blue-300 text-blue-700' : 'bg-white border-slate-200 text-slate-400'}`}
+                                                                                title={evt.full}
+                                                                            >
+                                                                                {isSelected ? <CheckSquare size={10}/> : <Square size={10}/>}
+                                                                                {evt.label}
+                                                                            </button>
+                                                                        )
+                                                                    })}
+                                                                </div>
+                                                            )}
+                                                        </div>
+                                                    ))}
+                                                </div>
+                                             ) : (
+                                                 <div className="flex flex-wrap gap-1.5">
+                                                        {ALL_EVENT_KEYS.map(key => {
+                                                             const evt = currentEventConfig.columns[key];
+                                                             const isSelected = selectedColumns.includes(key);
+                                                             return (
+                                                                    <button
+                                                                        key={key}
+                                                                        onClick={() => toggleColumn(key)}
+                                                                        className={`px-2 py-1 rounded text-[10px] font-bold border transition-all flex items-center gap-1 ${isSelected ? 'bg-blue-50 border-blue-300 text-blue-700' : 'bg-white border-slate-200 text-slate-400'}`}
+                                                                        title={evt.full}
+                                                                    >
+                                                                         {isSelected ? <CheckSquare size={10}/> : <Square size={10}/>}
+                                                                         {evt.label}
+                                                                    </button>
+                                                             )
+                                                        })}
+                                                 </div>
+                                             )}
+
                                              <div className="mt-2 text-xs text-slate-400">
-                                                    Aktualnie sumujesz: <span className="font-bold text-blue-600">{selectedColumns.length}</span> serii. 
+                                                    Aktualnie sumujesz: <span className="font-bold text-blue-600">
+                                                        {activeTab === 'all_competitions' ? selectedAllColumns.length : selectedColumns.length}
+                                                    </span> serii. 
                                                     Wynik w kolumnie <span className="bg-blue-100 text-blue-800 px-1 rounded font-mono">Wybór Σ</span>.
                                              </div>
                                         </div>
@@ -715,7 +1106,7 @@
                                    <div className={`absolute top-0 left-0 w-full h-1 bg-gradient-to-r ${activeTab === 'lgp2025' ? 'from-yellow-400 to-orange-500' : 'from-blue-400 to-indigo-500'}`}></div>
                                    {activeTab === 'lgp2025' ? <Sun size={48} className="text-orange-200 mb-4"/> : <Globe size={48} className="text-blue-200 mb-4" />}
                                    <h3 className="text-lg font-bold text-slate-800">
-                                     {activeTab === 'lgp2025' ? 'Letnie Grand Prix 2025' : 'Puchar Świata 2024/25'}
+                                     {activeTabTitle}
                                    </h3>
                                    <p className="text-sm text-slate-500 max-w-lg mb-4">
                                      Tabela przedstawia klasyfikację generalną. Zawodnicy oznaczeni na <span className="text-red-600 font-black">czerwono</span> nie oddali żadnego skoku w ten weekend w Lillehammer (są nieaktywni).
@@ -732,17 +1123,17 @@
 
                     <div className="max-w-[1600px] mx-auto -mx-2 md:mx-auto overflow-hidden rounded-none md:rounded-2xl border-t border-b md:border border-slate-200 shadow-lg bg-white">
                         <div className="overflow-x-auto no-scrollbar">
-                            <table className={`w-full ${activeTab === 'lillehammer' ? 'min-w-[1600px]' : 'min-w-full'} table-fixed`}>
+                            <table className={`w-full ${['results', 'all_competitions'].includes(activeTab) ? 'min-w-[1600px]' : 'min-w-full'} table-fixed`}>
                                 <thead>
                                     <tr className="bg-slate-50 border-b border-slate-200 text-left">
                                         <th className="p-3 text-xs font-bold text-slate-500 uppercase tracking-wider w-12 text-center">#</th>
                                         <th className="p-3 text-xs font-bold text-slate-500 uppercase tracking-wider w-56">Zawodnik</th>
                                         
-                                        {activeTab === 'lillehammer' ? (
+                                        {activeTab === 'results' && (
                                             <>
                                                 <th onClick={() => handleSort('seriesCount')} className={`p-2 text-[10px] font-bold text-slate-500 uppercase tracking-wider w-16 text-center cursor-pointer hover:bg-slate-100 ${sortBy === 'seriesCount' ? 'bg-slate-100 text-blue-600' : ''}`} title="Liczba zaliczonych serii">Serii</th>
                                                 
-                                                {Object.entries(EVENTS).map(([key, evt]) => {
+                                                {Object.entries(currentEventConfig.columns).map(([key, evt]) => {
                                                         if (!selectedColumns.includes(key)) return null;
                                                         return (
                                                                 <th key={key} onClick={() => handleSort(key)} className={`p-2 text-[10px] uppercase tracking-wider text-center cursor-pointer transition-colors border-l border-slate-100 select-none group w-16 ${sortBy === key ? 'bg-blue-50 border-blue-200' : 'hover:bg-slate-100'}`} title={evt.full}>
@@ -753,12 +1144,33 @@
                                                                 </th>
                                                         )
                                                 })}
+                                            </>
+                                        )}
 
-                                                {showDraftColumn && (
+                                        {activeTab === 'all_competitions' && (
+                                            <>
+                                                <th onClick={() => handleSort('seriesCount')} className={`p-2 text-[10px] font-bold text-slate-500 uppercase tracking-wider w-16 text-center cursor-pointer hover:bg-slate-100 ${sortBy === 'seriesCount' ? 'bg-slate-100 text-blue-600' : ''}`} title="Liczba zaliczonych serii">Serii</th>
+                                                {Object.values(ALL_COMPETITIONS_EVENTS).map((evt) => {
+                                                        if (!selectedAllColumns.includes(evt.id)) return null;
+                                                        return (
+                                                                <th key={evt.id} onClick={() => handleSort(evt.id)} className={`p-2 text-[10px] uppercase tracking-wider text-center cursor-pointer transition-colors border-l border-slate-100 select-none group w-16 ${sortBy === evt.id ? 'bg-blue-50 border-blue-200' : 'hover:bg-slate-100'}`} title={evt.full}>
+                                                                    <div className={`flex flex-col items-center gap-1 ${evt.color}`}>
+                                                                        <span>{evt.label}</span>
+                                                                        {sortBy === evt.id && <div className="text-blue-600">{sortDirection === 'desc' ? <ChevronDown size={12}/> : <ChevronUp size={12}/>}</div>}
+                                                                    </div>
+                                                                </th>
+                                                        )
+                                                })}
+                                            </>
+                                        )}
+
+                                        {(activeTab === 'results' || activeTab === 'all_competitions') && (
+                                            <>
+                                                {showDraftColumn && activeTab === 'results' && (
                                                     <th onClick={() => handleSort('draftTotal')} className={`p-2 text-[10px] uppercase tracking-wider text-center cursor-pointer border-l-2 border-slate-300 w-24 bg-indigo-50 hover:bg-indigo-100 ${sortBy === 'draftTotal' ? 'bg-indigo-100 text-indigo-800' : 'text-slate-600'}`}>
                                                         <div className="flex flex-col items-center gap-1 font-bold">
                                                              <span className="text-indigo-700">Pkt Draft</span>
-                                                             <span className="text-[8px] text-indigo-400">{draftMode === 'weekend' ? 'Sob+Ndz' : 'Ndz'}</span>
+                                                             <span className="text-[8px] text-indigo-400">{draftMode === 'weekend' ? 'Weekend' : 'Główny'}</span>
                                                              {sortBy === 'draftTotal' && (sortDirection === 'desc' ? <ChevronDown size={12}/> : <ChevronUp size={12}/>)}
                                                         </div>
                                                     </th>
@@ -780,7 +1192,7 @@
                                                     </th>
                                                 )}
                                                 
-                                                {selectedColumns.length === ALL_EVENT_KEYS.length && (
+                                                {((activeTab === 'results' && selectedColumns.length === ALL_EVENT_KEYS.length) || activeTab === 'all_competitions') && (
                                                     <th className={`p-3 text-xs font-bold uppercase tracking-wider text-right cursor-pointer border-l border-slate-200 w-28 ${sortBy === 'totalPoints' ? 'bg-slate-800 text-white' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'}`} onClick={() => handleSort('totalPoints')}>
                                                         <div className="flex items-center justify-end gap-1">
                                                             TOTAL
@@ -789,11 +1201,13 @@
                                                     </th>
                                                 )}
                                             </>
-                                        ) : (
+                                        )}
+
+                                        {activeTab !== 'results' && activeTab !== 'all_competitions' && (
                                             <>
                                                 <th className="p-3 text-xs font-bold text-slate-500 uppercase tracking-wider text-center w-32">Status</th>
                                                 <th className={`p-3 text-xs font-bold uppercase tracking-wider text-right cursor-pointer border-l border-slate-200 w-32 ${sortBy === 'points' ? 'bg-slate-100 text-blue-600' : 'text-slate-600 hover:bg-slate-50'}`} onClick={() => { setSortBy('points'); setSortDirection('desc'); }}>
-                                                    Punkty {activeTab === 'lgp2025' ? 'LGP' : 'PŚ'}
+                                                    Punkty {activeTabTitle}
                                                 </th>
                                             </>
                                         )}
@@ -812,7 +1226,7 @@
                                                     <img src={`https://flagcdn.com/w40/${skier.isoCode}.png`} alt={skier.country} className="w-6 h-4 object-cover rounded-sm shadow-sm" loading="lazy" />
                                                     <div className="overflow-hidden">
                                                         <div className="flex items-center gap-1">
-                                                            <div className={`text-sm truncate ${!skier.isActive && activeTab !== 'lillehammer' ? 'font-extrabold text-red-900' : 'font-bold text-slate-800'}`} title={skier.name}>{skier.name}</div>
+                                                            <div className={`text-sm truncate ${!skier.isActive && activeTab !== 'results' && activeTab !== 'all_competitions' ? 'font-extrabold text-red-900' : 'font-bold text-slate-800'}`} title={skier.name}>{skier.name}</div>
                                                             {skier.isDraft && <Star size={12} className="text-indigo-600 fill-indigo-600 shrink-0" />}
                                                         </div>
                                                         <div className="text-[10px] text-slate-400 font-mono flex gap-1">{skier.country}</div>
@@ -820,10 +1234,10 @@
                                                 </div>
                                             </td>
 
-                                            {activeTab === 'lillehammer' ? (
+                                            {activeTab === 'results' && (
                                                 <>
                                                     <td className="p-2 text-center text-xs text-slate-500 font-mono">{skier.seriesCount}</td>
-                                                    {Object.keys(EVENTS).map((evtKey) => {
+                                                    {Object.keys(currentEventConfig.columns).map((evtKey) => {
                                                         if (!selectedColumns.includes(evtKey)) return null;
                                                         return (
                                                             <td key={evtKey} className={`p-1 text-center border-l border-slate-50 ${sortBy === evtKey ? 'bg-blue-50/30 font-bold text-blue-900' : ''}`}>
@@ -833,7 +1247,28 @@
                                                             </td>
                                                         );
                                                     })}
-                                                    {showDraftColumn && (
+                                                </>
+                                            )}
+
+                                            {activeTab === 'all_competitions' && (
+                                                <>
+                                                    <td className="p-2 text-center text-xs text-slate-500 font-mono">{skier.seriesCount}</td>
+                                                    {Object.values(ALL_COMPETITIONS_EVENTS).map((evt) => {
+                                                        if (!selectedAllColumns.includes(evt.id)) return null;
+                                                        return (
+                                                            <td key={evt.id} className={`p-1 text-center border-l border-slate-50 ${sortBy === evt.id ? 'bg-blue-50/30 font-bold text-blue-900' : ''}`}>
+                                                                {skier[evt.id] > 0 ? (
+                                                                    <span className={`text-xs ${sortBy === evt.id ? 'font-bold' : 'font-medium text-slate-600'}`}>{skier[evt.id].toFixed(1)}</span>
+                                                                ) : (<span className="text-[10px] text-slate-200">-</span>)}
+                                                            </td>
+                                                        );
+                                                    })}
+                                                </>
+                                            )}
+
+                                            {(activeTab === 'results' || activeTab === 'all_competitions') && (
+                                                <>
+                                                    {showDraftColumn && activeTab === 'results' && (
                                                         <td className={`p-2 text-center border-l-2 border-slate-200 font-mono text-xs bg-indigo-50 text-indigo-800 font-bold`}>{skier.draftTotal}</td>
                                                     )}
                                                     <td className={`p-2 text-center border-l-2 border-slate-200 font-mono text-xs ${sortBy === 'customSum' ? 'bg-blue-100 font-bold text-blue-900' : 'bg-blue-50/30 text-blue-700'}`}>{skier.customSum.toFixed(1)}</td>
@@ -842,14 +1277,16 @@
                                                         <td className={`p-2 text-center border-l border-slate-200 font-mono text-xs ${sortBy === 'bestNSum' ? 'bg-purple-100 font-bold text-purple-900' : 'bg-purple-50/30 text-purple-700'}`}>{skier.bestNSum.toFixed(1)}</td>
                                                     )}
                                                     
-                                                    {selectedColumns.length === ALL_EVENT_KEYS.length && (
+                                                    {((activeTab === 'results' && selectedColumns.length === ALL_EVENT_KEYS.length) || activeTab === 'all_competitions') && (
                                                         <td className={`p-2 text-right border-l border-slate-100 ${sortBy === 'totalPoints' ? 'bg-slate-800 text-white' : ''}`}>
                                                             <div className={`font-extrabold text-sm ${sortBy === 'totalPoints' ? 'text-white' : 'text-slate-800'}`}>{skier.totalPoints.toFixed(1)}</div>
                                                             {skier.avgPoints > 0 && <div className={`text-[10px] ${sortBy === 'totalPoints' ? 'text-slate-400' : 'text-slate-400'}`}>Ø {skier.avgPoints}</div>}
                                                         </td>
                                                     )}
                                                 </>
-                                            ) : (
+                                            )}
+
+                                            {activeTab !== 'results' && activeTab !== 'all_competitions' && (
                                                 <>
                                                     <td className="p-2 text-center">
                                                         {skier.isActive ? (
@@ -881,5 +1318,3 @@
             </ErrorBoundary>
         );
     </script>
-</body>
-</html>
