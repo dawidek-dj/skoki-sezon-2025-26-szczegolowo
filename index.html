@@ -1,11 +1,9 @@
-
 <html lang="pl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lillehammer Opening 2025</title>
+    <title>Ski Jumping 2025 - Lillehammer & Falun</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Babel umożliwia używanie JSX w przeglądarce -->
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
     <style>
         body { font-family: 'Inter', sans-serif; }
@@ -16,7 +14,6 @@
 <body class="bg-slate-50">
     <div id="root"></div>
 
-    <!-- Używamy data-type="module", aby korzystać z nowoczesnych importów -->
     <script type="text/babel" data-type="module">
         import React, { useState, useMemo, useEffect } from 'https://esm.sh/react@18.2.0';
         import { createRoot } from 'https://esm.sh/react-dom@18.2.0/client';
@@ -130,7 +127,6 @@
         ];
 
         // --- DANE FALUN - 25.11.2025 ---
-        // Zaktualizowane o wyniki konkursu
         const FALUN_DATA = [
             { name: "Daniel Tschofenig", country: "AUT", isoCode: "at", t1: 72.7, t2: 65.2, q: 119.6, c1: 121.0, c2: 119.2 },
             { name: "Stefan Kraft", country: "AUT", isoCode: "at", t1: 75.2, t2: 68.6, q: 118.2, c1: 127.4, c2: 122.5 },
@@ -200,6 +196,81 @@
             { name: "Weijie Zhen", country: "CHN", isoCode: "cn", t1: 36.3, t2: 34.6, q: 80.1, c1: 0, c2: 0 },
             { name: "Svyatoslav Nazarenko", country: "KAZ", isoCode: "kz", t1: 43.2, t2: 38.0, q: 78.8, c1: 0, c2: 0 },
             { name: "Kristoffer E. Sundal", country: "NOR", isoCode: "no", t1: 73.2, t2: 68.6, q: 0, c1: 0, c2: 0 }
+        ];
+        
+        // --- DANE FALUN HS 132 (26.11.2025) - Zaktualizowane z protokołu ---
+        const FALUN_HS132_DATA = [
+           { name: "LANISEK Anze", country: "SLO", isoCode: "si", q: 128.1, q_dist: 126.0, q_note: 55.0, q_comp: 2.3, c1: 131.6, c1_dist: 129.0, c1_note: 55.5, c1_comp: -0.1, c2: 131.3, c2_dist: 128.5, c2_note: 56.0, c2_comp: 0.0 },
+           { name: "EMBACHER Stephan", country: "AUT", isoCode: "at", q: 131.3, q_dist: 131.0, q_note: 55.0, q_comp: -3.5, c1: 127.2, c1_dist: 128.5, c1_note: 55.5, c1_comp: -3.6, c2: 132.7, c2_dist: 129.0, c2_note: 56.0, c2_comp: 0.5 },
+           { name: "PREVC Domen", country: "SLO", isoCode: "si", q: 112.1, q_dist: 121.5, q_note: 47.0, q_comp: 2.4, c1: 129.2, c1_dist: 129.0, c1_note: 52.0, c1_comp: 1.0, c2: 129.5, c2_dist: 129.0, c2_note: 55.0, c2_comp: -1.7 },
+           { name: "TSCHOFENIG Daniel", country: "AUT", isoCode: "at", q: 122.6, q_dist: 123.5, q_note: 54.0, q_comp: 2.3, c1: 126.2, c1_dist: 127.0, c1_note: 56.0, c1_comp: -2.4, c2: 130.4, c2_dist: 129.0, c2_note: 55.5, c2_comp: -1.3 },
+           { name: "HOERL Jan", country: "AUT", isoCode: "at", q: 120.8, q_dist: 122.5, q_note: 53.5, q_comp: 2.8, c1: 125.8, c1_dist: 125.0, c1_note: 54.0, c1_comp: 2.8, c2: 126.4, c2_dist: 126.5, c2_note: 54.0, c2_comp: 0.7 },
+           { name: "KOBAYASHI Ryoyu", country: "JPN", isoCode: "jp", q: 126.5, q_dist: 125.5, q_note: 54.0, q_comp: 2.6, c1: 124.8, c1_dist: 127.5, c1_note: 55.0, c1_comp: -3.7, c2: 125.1, c2_dist: 127.5, c2_note: 55.0, c2_comp: -3.4 },
+           { name: "FETTNER Manuel", country: "AUT", isoCode: "at", q: 121.5, q_dist: 126.0, q_note: 52.5, q_comp: -1.8, c1: 127.7, c1_dist: 128.0, c1_note: 53.5, c1_comp: -0.2, c2: 121.5, c2_dist: 123.5, c2_note: 54.0, c2_comp: 1.2 },
+           { name: "NIKAIDO Ren", country: "JPN", isoCode: "jp", q: 119.1, q_dist: 125.0, q_note: 54.0, q_comp: -3.9, c1: 129.4, c1_dist: 130.0, c1_note: 55.0, c1_comp: -3.6, c2: 119.7, c2_dist: 124.5, c2_note: 54.5, c2_comp: -2.9 },
+           { name: "KRAFT Stefan", country: "AUT", isoCode: "at", q: 117.3, q_dist: 121.0, q_note: 54.0, q_comp: 1.5, c1: 136.9, c1_dist: 133.0, c1_note: 57.0, c1_comp: -3.5, c2: 106.1, c2_dist: 119.0, c2_note: 54.0, c2_comp: -6.1 },
+           { name: "DESCHWANDEN Gregor", country: "SUI", isoCode: "ch", q: 117.1, q_dist: 125.5, q_note: 50.5, q_comp: -3.3, c1: 121.2, c1_dist: 128.0, c1_note: 52.0, c1_comp: -5.2, c2: 118.4, c2_dist: 125.5, c2_note: 52.5, c2_comp: -4.0 },
+           { name: "RAIMUND Philipp", country: "GER", isoCode: "de", q: 124.9, q_dist: 125.0, q_note: 53.0, q_comp: 2.9, c1: 123.1, c1_dist: 125.5, c1_note: 54.0, c1_comp: 0.1, c2: 115.9, c2_dist: 125.5, c2_note: 52.0, c2_comp: -6.0 },
+           { name: "HOFFMANN Felix", country: "GER", isoCode: "de", q: 123.1, q_dist: 124.0, q_note: 53.5, q_comp: 2.4, c1: 123.8, c1_dist: 128.5, c1_note: 50.0, c1_comp: 0.1, c2: 113.9, c2_dist: 121.0, c2_note: 52.5, c2_comp: -4.2 },
+           { name: "SUNDAL Kristoffer Eriksen", country: "NOR", isoCode: "no", q: 117.3, q_dist: 124.0, q_note: 52.5, q_comp: -2.4, c1: 117.6, c1_dist: 124.5, c1_note: 53.5, c1_comp: -4.0, c2: 117.5, c2_dist: 124.5, c2_note: 54.0, c2_comp: 0.4 },
+           { name: "PASCHKE Pius", country: "GER", isoCode: "de", q: 113.1, q_dist: 123.5, q_note: 52.5, q_comp: -5.7, c1: 119.8, c1_dist: 121.0, c1_note: 53.0, c1_comp: 5.0, c2: 114.7, c2_dist: 123.0, c2_note: 53.0, c2_comp: -3.7 },
+           { name: "TOMASIAK Kacper", country: "POL", isoCode: "pl", q: 111.9, q_dist: 121.0, q_note: 52.5, q_comp: -2.4, c1: 117.2, c1_dist: 121.0, c1_note: 52.5, c1_comp: 2.9, c2: 117.1, c2_dist: 124.5, c2_note: 53.5, c2_comp: 0.4 },
+           { name: "STOCH Kamil", country: "POL", isoCode: "pl", q: 119.3, q_dist: 124.0, q_note: 55.0, q_comp: -2.9, c1: 116.5, c1_dist: 122.5, c1_note: 53.0, c1_comp: -1.0, c2: 117.3, c2_dist: 125.5, c2_note: 52.5, c2_comp: -5.1 },
+           { name: "NAKAMURA Naoki", country: "JPN", isoCode: "jp", q: 112.8, q_dist: 122.0, q_note: 53.5, q_comp: -4.3, c1: 118.6, c1_dist: 124.5, c1_note: 53.0, c1_comp: 0.2, c2: 112.9, c2_dist: 122.5, c2_note: 54.0, c2_comp: -5.6 },
+           { name: "LINDVIK Marius", country: "NOR", isoCode: "no", q: 108.6, q_dist: 121.0, q_note: 51.0, q_comp: -4.2, c1: 122.3, c1_dist: 125.5, c1_note: 54.0, c1_comp: -1.6, c2: 107.1, c2_dist: 122.0, c2_note: 51.5, c2_comp: -8.0 },
+           { name: "FOUBERT Valentin", country: "FRA", isoCode: "fr", q: 108.3, q_dist: 119.5, q_note: 51.5, q_comp: -2.3, c1: 111.9, c1_dist: 122.0, c1_note: 52.5, c1_comp: 0.4, c2: 116.3, c2_dist: 124.0, c2_note: 53.0, c2_comp: 0.4 },
+           { name: "FORFANG Johann Andre", country: "NOR", isoCode: "no", q: 107.9, q_dist: 119.5, q_note: 51.0, q_comp: -2.2, c1: 117.2, c1_dist: 121.0, c1_note: 52.5, c1_comp: -0.2, c2: 110.8, c2_dist: 121.5, c2_note: 52.5, c2_comp: -4.4 },
+           { name: "OBLAK Rok", country: "SLO", isoCode: "si", q: 112.8, q_dist: 121.5, q_note: 52.5, q_comp: -2.4, c1: 117.7, c1_dist: 123.0, c1_note: 54.0, c1_comp: 0.2, c2: 108.7, c2_dist: 120.0, c2_note: 52.0, c2_comp: -3.3 },
+           { name: "NAITO Tomofumi", country: "JPN", isoCode: "jp", q: 110.5, q_dist: 121.0, q_note: 52.0, q_comp: -3.3, c1: 115.6, c1_dist: 122.0, c1_note: 52.0, c1_comp: 0.0, c2: 110.5, c2_dist: 122.5, c2_note: 51.5, c2_comp: 0.5 },
+           { name: "COLBY Jason", country: "USA", isoCode: "us", q: 114.6, q_dist: 123.5, q_note: 53.5, q_comp: -5.2, c1: 112.7, c1_dist: 117.5, c1_note: 51.5, c1_comp: 5.7, c2: 110.8, c2_dist: 122.0, c2_note: 53.5, c2_comp: -6.3 },
+           { name: "ZOGRAFSKI Vladimir", country: "BUL", isoCode: "bg", q: 109.8, q_dist: 121.0, q_note: 51.0, q_comp: -3.0, c1: 113.0, c1_dist: 120.0, c1_note: 52.5, c1_comp: 0.0, c2: 109.0, c2_dist: 121.5, c2_note: 53.0, c2_comp: 0.6 },
+           { name: "ORTNER Maximilian", country: "AUT", isoCode: "at", q: 112.5, q_dist: 122.5, q_note: 52.0, q_comp: -4.0, c1: 110.0, c1_dist: 120.0, c1_note: 51.5, c1_comp: -1.5, c2: 111.1, c2_dist: 122.0, c2_note: 52.5, c2_comp: -5.0 },
+           { name: "AIGRO Artti", country: "EST", isoCode: "ee", q: 117.3, q_dist: 124.5, q_note: 54.0, q_comp: -4.8, c1: 112.3, c1_dist: 121.5, c1_note: 52.5, c1_comp: 0.3, c2: 106.6, c2_dist: 120.5, c2_note: 51.5, c2_comp: 0.5 },
+           { name: "SATO Yukiya", country: "JPN", isoCode: "jp", q: 113.1, q_dist: 123.0, q_note: 51.0, q_comp: -3.3, c1: 110.6, c1_dist: 119.5, c1_note: 51.0, c1_comp: 0.5, c2: 107.4, c2_dist: 121.5, c2_note: 51.0, c2_comp: -6.3 },
+           { name: "KUBACKI Dawid", country: "POL", isoCode: "pl", q: 103.1, q_dist: 118.0, q_note: 51.5, q_comp: -4.8, c1: 109.7, c1_dist: 119.0, c1_note: 52.5, c1_comp: 0.1, c2: 107.7, c2_dist: 120.5, c2_note: 52.5, c2_comp: 0.5 },
+           { name: "ZYLA Piotr", country: "POL", isoCode: "pl", q: 97.0, q_dist: 116.0, q_note: 49.5, q_comp: -5.3, c1: 109.8, c1_dist: 119.0, c1_note: 51.0, c1_comp: 0.0, c2: 106.8, c2_dist: 121.5, c2_note: 51.0, c2_comp: 0.6 },
+           { name: "BICKNER Kevin", country: "USA", isoCode: "us", q: 99.8, q_dist: 116.5, q_note: 49.0, q_comp: -2.9, c1: 112.5, c1_dist: 122.5, c1_note: 51.5, c1_comp: -3.5, c2: 102.3, c2_dist: 119.0, c2_note: 49.5, c2_comp: -5.4 },
+           // --- ODPADLI PO 1. SERII (FALUN 26.11) ---
+           { name: "WASEK Pawel", country: "POL", isoCode: "pl", q: 107.8, q_dist: 118.0, q_note: 52.0, q_comp: -0.6, c1: 109.3, c1_dist: 118.5, c1_note: 52.0, c1_comp: 0.0, c2: 0 },
+           { name: "HAUSWIRTH Sandro", country: "SUI", isoCode: "ch", q: 112.6, q_dist: 121.5, q_note: 50.5, q_comp: -0.6, c1: 108.5, c1_dist: 118.5, c1_note: 51.5, c1_comp: -0.3, c2: 0 },
+           { name: "KOBAYASHI Sakutaro", country: "JPN", isoCode: "jp", q: 107.0, q_dist: 120.5, q_note: 52.5, q_comp: -6.4, c1: 107.6, c1_dist: 117.5, c1_note: 51.0, c1_comp: 1.1, c2: 0 },
+           { name: "GRANERUD Halvor Egner", country: "NOR", isoCode: "no", q: 111.9, q_dist: 120.5, q_note: 52.5, q_comp: -1.5, c1: 107.5, c1_dist: 117.5, c1_note: 51.5, c1_comp: 0.5, c2: 0 },
+           { name: "TRUNZ Felix", country: "SUI", isoCode: "ch", q: 105.5, q_dist: 118.5, q_note: 51.0, q_comp: -2.8, c1: 107.1, c1_dist: 121.5, c1_note: 52.0, c1_comp: -7.6, c2: 0 },
+           { name: "AMMANN Simon", country: "SUI", isoCode: "ch", q: 105.4, q_dist: 119.0, q_note: 49.5, q_comp: -2.3, c1: 106.6, c1_dist: 118.5, c1_note: 49.5, c1_comp: -0.2, c2: 0 },
+           { name: "AALTO Antti", country: "FIN", isoCode: "fi", q: 108.1, q_dist: 119.0, q_note: 52.0, q_comp: -2.1, c1: 106.2, c1_dist: 119.0, c1_note: 51.5, c1_comp: -3.5, c2: 0 },
+           { name: "URLAUB Andrew", country: "USA", isoCode: "us", q: 97.6, q_dist: 114.0, q_note: 49.5, q_comp: -1.1, c1: 104.1, c1_dist: 117.0, c1_note: 50.5, c1_comp: -1.0, c2: 0 },
+           { name: "KOS Lovro", country: "SLO", isoCode: "si", q: 112.1, q_dist: 123.0, q_note: 52.5, q_comp: -5.8, c1: 102.9, c1_dist: 119.5, c1_note: 50.0, c1_comp: -6.2, c2: 0 },
+           { name: "WELLINGER Andreas", country: "GER", isoCode: "de", q: 107.0, q_dist: 118.5, q_note: 51.5, q_comp: -1.8, c1: 100.6, c1_dist: 115.5, c1_note: 51.0, c1_comp: -2.3, c2: 0 },
+           { name: "GEIGER Karl", country: "GER", isoCode: "de", q: 99.2, q_dist: 114.0, q_note: 50.0, q_comp: 0.0, c1: 100.3, c1_dist: 115.0, c1_note: 50.5, c1_comp: -1.2, c2: 0 },
+           { name: "KALINICHENKO Vitaliy", country: "UKR", isoCode: "ua", q: 102.0, q_dist: 117.5, q_note: 47.5, q_comp: -1.0, c1: 99.8, c1_dist: 114.0, c1_note: 49.5, c1_comp: 1.1, c2: 0 },
+           { name: "KOUDELKA Roman", country: "CZE", isoCode: "cz", q: 101.6, q_dist: 115.0, q_note: 51.5, q_comp: -0.9, c1: 99.2, c1_dist: 117.5, c1_note: 52.0, c1_comp: -8.3, c2: 0 },
+           { name: "OBERSTEINER Louis", country: "AUT", isoCode: "at", q: 96.7, q_dist: 113.5, q_note: 50.5, q_comp: -2.1, c1: 97.4, c1_dist: 114.0, c1_note: 50.0, c1_comp: -1.8, c2: 0 },
+           { name: "KAPUSTIK Hektor", country: "SVK", isoCode: "sk", q: 94.1, q_dist: 113.0, q_note: 49.5, q_comp: -2.8, c1: 95.7, c1_dist: 113.5, c1_note: 50.0, c1_comp: -2.6, c2: 0 },
+           { name: "OESTVOLD Benjamin", country: "NOR", isoCode: "no", q: 106.1, q_dist: 119.5, q_note: 49.5, q_comp: -2.5, c1: 94.6, c1_dist: 112.5, c1_note: 49.5, c1_comp: -1.4, c2: 0 },
+           { name: "MIZERNYKH Ilya", country: "KAZ", isoCode: "kz", q: 100.0, q_dist: 113.0, q_note: 50.0, q_comp: 2.6, c1: 93.2, c1_dist: 109.5, c1_note: 49.0, c1_comp: 3.1, c2: 0 },
+           { name: "KESSELI Juri", country: "SUI", isoCode: "ch", q: 95.9, q_dist: 116.5, q_note: 46.0, q_comp: -3.8, c1: 92.4, c1_dist: 111.0, c1_note: 48.0, c1_comp: 0.6, c2: 0 },
+           { name: "BOYD-CLOWES Mackenzie", country: "CAN", isoCode: "ca", q: 96.4, q_dist: 114.5, q_note: 49.5, q_comp: -3.2, c1: 90.6, c1_dist: 113.0, c1_note: 49.5, c1_comp: -6.3, c2: 0 },
+           { name: "VASSILYEV Danil", country: "KAZ", isoCode: "kz", q: 107.2, q_dist: 119.5, q_note: 51.0, q_comp: -2.9, c1: 82.7, c1_dist: 105.0, c1_note: 45.5, c1_comp: 4.2, c2: 0 },
+           
+           // --- POZOSTALI (Nie startowali w konkursie / Odpadli w Q) ---
+           { name: "ZAJC Timi", country: "SLO", isoCode: "si", q: 94.0, q_dist: 111.0, q_note: 50.0, q_comp: 0.2 },
+           { name: "FRANTZ Tate", country: "USA", isoCode: "us", q: 93.9, q_dist: 113.5, q_note: 49.5, q_comp: -3.9 },
+           { name: "CHERVET Jules", country: "FRA", isoCode: "fr", q: 92.3, q_dist: 114.5, q_note: 49.0, q_comp: -6.8 },
+           { name: "BELSHAW Erik", country: "USA", isoCode: "us", q: 92.0, q_dist: 109.5, q_note: 49.0, q_comp: 1.9 },
+           { name: "ZNISZCZOL Aleksander", country: "POL", isoCode: "pl", q: 91.4, q_dist: 111.0, q_note: 49.0, q_comp: -1.4 },
+           { name: "CECON Francesco", country: "ITA", isoCode: "it", q: 91.3, q_dist: 111.5, q_note: 49.5, q_comp: -2.9 },
+           { name: "BRESADOLA Giovanni", country: "ITA", isoCode: "it", q: 91.0, q_dist: 110.5, q_note: 48.5, q_comp: -0.4 },
+           { name: "PALOSAARI Vilho", country: "FIN", isoCode: "fi", q: 90.5, q_dist: 111.0, q_note: 49.0, q_comp: -2.3 },
+           { name: "IPCIOGLU Fatih Arda", country: "TUR", isoCode: "tr", q: 86.4, q_dist: 110.5, q_note: 48.0, q_comp: -4.5 },
+           { name: "VALTO Kasperi", country: "FIN", isoCode: "fi", q: 85.8, q_dist: 110.5, q_note: 48.0, q_comp: -5.1 },
+           { name: "INSAM Alex", country: "ITA", isoCode: "it", q: 85.3, q_dist: 106.5, q_note: 48.5, q_comp: 1.1 },
+           { name: "MARUSIAK Yevhen", country: "UKR", isoCode: "ua", q: 83.7, q_dist: 109.0, q_note: 46.0, q_comp: -2.5 },
+           { name: "CACINA Daniel Andrei", country: "ROU", isoCode: "ro", q: 80.7, q_dist: 107.0, q_note: 45.0, q_comp: 0.9 },
+           { name: "LYU Yixin", country: "CHN", isoCode: "cn", q: 71.5, q_dist: 102.5, q_note: 46.5, q_comp: -3.5 },
+           { name: "SPULBER Mihnea Alexandru", country: "ROU", isoCode: "ro", q: 71.5, q_dist: 100.0, q_note: 46.5, q_comp: 1.0 },
+           { name: "BEDIR Muhammed Ali", country: "TUR", isoCode: "tr", q: 70.7, q_dist: 101.5, q_note: 48.0, q_comp: -4.0 },
+           { name: "NAZARENKO Svyatoslav", country: "KAZ", isoCode: "kz", q: 66.3, q_dist: 101.5, q_note: 44.5, q_comp: 4.9 },
+           { name: "ZHEN Weijie", country: "CHN", isoCode: "cn", q: 0 }
         ];
 
         // --- DANE ZAWODNIKÓW PŚ 2024/25 (Stare dane) ---
@@ -389,6 +460,14 @@
             c2: { id: 'c2', label: "C2 (Wt)", full: "Konkurs (Finał)", color: "text-blue-700 font-bold", group: "comp" },
         };
 
+        const FALUN_HS132_EVENTS = {
+            t1: { id: 't1', label: "T1 (Śr)", full: "1. Trening", color: "text-slate-500", group: "training" },
+            t2: { id: 't2', label: "T2 (Śr)", full: "2. Trening", color: "text-slate-500", group: "training" },
+            q:  { id: 'q',  label: "Q (Śr)",  full: "Kwalifikacje", color: "text-blue-600", group: "quali" },
+            c1: { id: 'c1', label: "C1 (Śr)", full: "Konkurs (1. Seria)", color: "text-blue-700 font-bold", group: "comp" },
+            c2: { id: 'c2', label: "C2 (Śr)", full: "Konkurs (Finał)", color: "text-blue-700 font-bold", group: "comp" },
+        };
+
         // Zdefiniuj eventy dla połączonego widoku, prefiksując je aby uniknąć konfliktów
         const ALL_COMPETITIONS_EVENTS = {
             // Lillehammer
@@ -403,12 +482,19 @@
             lille_c2_1: { id: 'lille_c2_1', label: "Lil C2-1", full: "Lillehammer - Konkurs Ndz (1. Seria)", color: "text-blue-700 font-bold", group: "lillehammer" },
             lille_c2_2: { id: 'lille_c2_2', label: "Lil C2-2", full: "Lillehammer - Konkurs Ndz (Finał)", color: "text-blue-700 font-bold", group: "lillehammer" },
             
-            // Falun
-            falun_t1: { id: 'falun_t1', label: "Fal T1", full: "Falun - 1. Trening", color: "text-slate-500", group: "falun" },
-            falun_t2: { id: 'falun_t2', label: "Fal T2", full: "Falun - 2. Trening", color: "text-slate-500", group: "falun" },
-            falun_q: { id: 'falun_q', label: "Fal Q", full: "Falun - Kwalifikacje", color: "text-blue-600", group: "falun" },
-            falun_c1: { id: 'falun_c1', label: "Fal C1", full: "Falun - Konkurs (1. Seria)", color: "text-blue-700 font-bold", group: "falun" },
-            falun_c2: { id: 'falun_c2', label: "Fal C2", full: "Falun - Konkurs (Finał)", color: "text-blue-700 font-bold", group: "falun" },
+            // Falun HS 95
+            falun_t1: { id: 'falun_t1', label: "Fal 95 T1", full: "Falun HS95 - 1. Trening", color: "text-slate-500", group: "falun" },
+            falun_t2: { id: 'falun_t2', label: "Fal 95 T2", full: "Falun HS95 - 2. Trening", color: "text-slate-500", group: "falun" },
+            falun_q: { id: 'falun_q', label: "Fal 95 Q", full: "Falun HS95 - Kwalifikacje", color: "text-blue-600", group: "falun" },
+            falun_c1: { id: 'falun_c1', label: "Fal 95 C1", full: "Falun HS95 - Konkurs (1. Seria)", color: "text-blue-700 font-bold", group: "falun" },
+            falun_c2: { id: 'falun_c2', label: "Fal 95 C2", full: "Falun HS95 - Konkurs (Finał)", color: "text-blue-700 font-bold", group: "falun" },
+
+            // Falun HS 132
+            falun132_t1: { id: 'falun132_t1', label: "Fal 132 T1", full: "Falun HS132 - 1. Trening", color: "text-slate-500", group: "falun_132" },
+            falun132_t2: { id: 'falun132_t2', label: "Fal 132 T2", full: "Falun HS132 - 2. Trening", color: "text-slate-500", group: "falun_132" },
+            falun132_q: { id: 'falun132_q', label: "Fal 132 Q", full: "Falun HS132 - Kwalifikacje", color: "text-blue-600", group: "falun_132" },
+            falun132_c1: { id: 'falun132_c1', label: "Fal 132 C1", full: "Falun HS132 - Konkurs (1. Seria)", color: "text-blue-700 font-bold", group: "falun_132" },
+            falun132_c2: { id: 'falun132_c2', label: "Fal 132 C2", full: "Falun HS132 - Konkurs (Finał)", color: "text-blue-700 font-bold", group: "falun_132" },
         };
 
         // KONFIGURACJA ZAWODÓW
@@ -423,6 +509,12 @@
                 label: "Falun HS 95 (K-90) - 25.11.2025",
                 data: FALUN_DATA,
                 columns: FALUN_EVENTS,
+                defaultCols: ['c1', 'c2']
+            },
+            falun_hs132: {
+                label: "Falun HS 132 (K-120) - 26.11.2025",
+                data: FALUN_HS132_DATA,
+                columns: FALUN_HS132_EVENTS,
                 defaultCols: ['c1', 'c2']
             }
         };
@@ -481,17 +573,19 @@
             // STATE FOR SELECTIONS PER EVENT
             const [selectionsByEvent, setSelectionsByEvent] = useState({
                 lillehammer: EVENTS_CONFIG.lillehammer.defaultCols,
-                falun: EVENTS_CONFIG.falun.defaultCols
+                falun: EVENTS_CONFIG.falun.defaultCols,
+                falun_hs132: EVENTS_CONFIG.falun_hs132.defaultCols
             });
 
             // State for combined view
             const [selectedAllColumns, setSelectedAllColumns] = useState([
                 'lille_c1_1', 'lille_c1_2', 'lille_c2_1', 'lille_c2_2',
-                'falun_c1', 'falun_c2'
+                'falun_c1', 'falun_c2', 'falun132_c1', 'falun132_c2'
             ]);
             const [expandedGroups, setExpandedGroups] = useState({
                 lillehammer: true,
-                falun: true
+                falun: true,
+                falun_132: true
             });
 
             const [bestN, setBestN] = useState(10);
@@ -512,7 +606,7 @@
                         if(hasPoints) set.add(p.name);
                     });
                 } else if (activeTab === 'all_competitions') {
-                    [...LILLEHAMMER_DATA, ...FALUN_DATA].forEach(p => set.add(p.name));
+                    [...LILLEHAMMER_DATA, ...FALUN_DATA, ...FALUN_HS132_DATA].forEach(p => set.add(p.name));
                 }
                 set.add("Wasiljew Danił");
                 set.add("Danil Vassilyev");
@@ -620,14 +714,17 @@
 
             const processedData = useMemo(() => {
                 if (activeTab === 'all_competitions') {
-                    const allPlayerNames = new Set([...LILLEHAMMER_DATA.map(p => p.name), ...FALUN_DATA.map(p => p.name)]);
+                    // --- MERGE LOGIC ---
+                    const allPlayerNames = new Set([...LILLEHAMMER_DATA.map(p => p.name), ...FALUN_DATA.map(p => p.name), ...FALUN_HS132_DATA.map(p => p.name)]);
                     const skiersMap = {};
 
                     allPlayerNames.forEach(name => {
                         const lilleData = LILLEHAMMER_DATA.find(p => p.name === name) || {};
                         const falunData = FALUN_DATA.find(p => p.name === name) || {};
-                        const country = lilleData.country || falunData.country || "N/A";
-                        const isoCode = lilleData.isoCode || falunData.isoCode || "xx";
+                        const falun132Data = FALUN_HS132_DATA.find(p => p.name === name) || {};
+                        
+                        const country = lilleData.country || falunData.country || falun132Data.country || "N/A";
+                        const isoCode = lilleData.isoCode || falunData.isoCode || falun132Data.isoCode || "xx";
 
                         const merged = {
                             name, country, isoCode,
@@ -639,6 +736,14 @@
                             falun_t1: falunData.t1 || 0, falun_t2: falunData.t2 || 0,
                             falun_q: falunData.q || 0, falun_c1: falunData.c1 || 0,
                             falun_c2: falunData.c2 || 0,
+                            falun132_t1: falun132Data.t1 || 0, falun132_t2: falun132Data.t2 || 0,
+                            falun132_q: falun132Data.q || 0, falun132_c1: falun132Data.c1 || 0,
+                            falun132_c2: falun132Data.c2 || 0,
+                            
+                            // Preserve detailed data for falun132 - Updated names to match ID
+                            falun132_q_dist: falun132Data.q_dist, falun132_q_note: falun132Data.q_note, falun132_q_comp: falun132Data.q_comp,
+                            falun132_c1_dist: falun132Data.c1_dist, falun132_c1_note: falun132Data.c1_note, falun132_c1_comp: falun132Data.c1_comp,
+                            falun132_c2_dist: falun132Data.c2_dist, falun132_c2_note: falun132Data.c2_note, falun132_c2_comp: falun132Data.c2_comp
                         };
                         skiersMap[name] = merged;
                     });
@@ -688,7 +793,7 @@
                         if (activeEventId === 'lillehammer') {
                             satTotal = (skier.c1_1 || 0) + (skier.c1_2 || 0);
                             sunTotal = (skier.c2_1 || 0) + (skier.c2_2 || 0);
-                        } else if (activeEventId === 'falun') {
+                        } else if (activeEventId === 'falun' || activeEventId === 'falun_hs132') {
                             sunTotal = (skier.c1 || 0) + (skier.c2 || 0);
                         }
                         skiersMap[skier.name] = { ...skier, satTotal, sunTotal };
@@ -839,7 +944,7 @@
                                 <div className="flex items-center gap-2 md:gap-3 mb-2">
                                     <span className="px-2 py-0.5 md:px-3 md:py-1 bg-blue-600 text-white text-[10px] md:text-xs font-bold rounded-full tracking-wider uppercase">Sezon 2025/26</span>
                                     <span className="text-slate-500 text-xs md:text-sm font-medium flex items-center gap-1">
-                                        <Calendar size={14} /> 21-25 Listopada 2025
+                                        <Calendar size={14} /> 21-26 Listopada 2025
                                     </span>
                                 </div>
                                 <h1 className="text-2xl md:text-3xl font-extrabold text-slate-900 mb-1 leading-tight">
@@ -901,6 +1006,7 @@
                                         >
                                             <option value="lillehammer">Lillehammer HS 140 (K-123)</option>
                                             <option value="falun">Falun HS 95 (K-90)</option>
+                                            <option value="falun_hs132">Falun HS 132 (K-120)</option>
                                         </select>
                                         <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-slate-700">
                                             <ChevronDown size={16} />
@@ -1013,7 +1119,7 @@
                                              {/* RÓŻNE WIDOKI SELEKTORÓW ZALEŻNIE OD ZAKŁADKI */}
                                              {activeTab === 'all_competitions' ? (
                                                 <div className="space-y-3 h-48 overflow-y-auto pr-2">
-                                                    {['lillehammer', 'falun'].map(grp => (
+                                                    {['lillehammer', 'falun', 'falun_132'].map(grp => (
                                                         <div key={grp} className="border-b border-slate-100 pb-2">
                                                             <button onClick={() => toggleGroupExpand(grp)} className="w-full flex justify-between items-center mb-1 hover:bg-slate-50 p-1 rounded">
                                                                 <div className="text-[10px] font-bold text-slate-600 uppercase flex items-center gap-1">
@@ -1136,7 +1242,7 @@
                                                 {Object.entries(currentEventConfig.columns).map(([key, evt]) => {
                                                         if (!selectedColumns.includes(key)) return null;
                                                         return (
-                                                                <th key={key} onClick={() => handleSort(key)} className={`p-2 text-[10px] uppercase tracking-wider text-center cursor-pointer transition-colors border-l border-slate-100 select-none group w-16 ${sortBy === key ? 'bg-blue-50 border-blue-200' : 'hover:bg-slate-100'}`} title={evt.full}>
+                                                                <th key={key} onClick={() => handleSort(key)} className={`p-2 text-[10px] uppercase tracking-wider text-center cursor-pointer transition-colors border-l border-slate-100 select-none group w-24 ${sortBy === key ? 'bg-blue-50 border-blue-200' : 'hover:bg-slate-100'}`} title={evt.full}>
                                                                     <div className={`flex flex-col items-center gap-1 ${evt.color}`}>
                                                                         <span>{evt.label.split(' ')[0]}</span>
                                                                         {sortBy === key && <div className="text-blue-600">{sortDirection === 'desc' ? <ChevronDown size={12}/> : <ChevronUp size={12}/>}</div>}
@@ -1153,7 +1259,7 @@
                                                 {Object.values(ALL_COMPETITIONS_EVENTS).map((evt) => {
                                                         if (!selectedAllColumns.includes(evt.id)) return null;
                                                         return (
-                                                                <th key={evt.id} onClick={() => handleSort(evt.id)} className={`p-2 text-[10px] uppercase tracking-wider text-center cursor-pointer transition-colors border-l border-slate-100 select-none group w-16 ${sortBy === evt.id ? 'bg-blue-50 border-blue-200' : 'hover:bg-slate-100'}`} title={evt.full}>
+                                                                <th key={evt.id} onClick={() => handleSort(evt.id)} className={`p-2 text-[10px] uppercase tracking-wider text-center cursor-pointer transition-colors border-l border-slate-100 select-none group w-24 ${sortBy === evt.id ? 'bg-blue-50 border-blue-200' : 'hover:bg-slate-100'}`} title={evt.full}>
                                                                     <div className={`flex flex-col items-center gap-1 ${evt.color}`}>
                                                                         <span>{evt.label}</span>
                                                                         {sortBy === evt.id && <div className="text-blue-600">{sortDirection === 'desc' ? <ChevronDown size={12}/> : <ChevronUp size={12}/>}</div>}
@@ -1239,10 +1345,29 @@
                                                     <td className="p-2 text-center text-xs text-slate-500 font-mono">{skier.seriesCount}</td>
                                                     {Object.keys(currentEventConfig.columns).map((evtKey) => {
                                                         if (!selectedColumns.includes(evtKey)) return null;
+                                                        const val = skier[evtKey];
+                                                        const dist = skier[evtKey + '_dist'];
+                                                        const note = skier[evtKey + '_note'];
+                                                        const comp = skier[evtKey + '_comp'];
+
                                                         return (
                                                             <td key={evtKey} className={`p-1 text-center border-l border-slate-50 ${sortBy === evtKey ? 'bg-blue-50/30 font-bold text-blue-900' : ''}`}>
-                                                                {skier[evtKey] > 0 ? (
-                                                                    <span className={`text-xs ${sortBy === evtKey ? 'font-bold' : 'font-medium text-slate-600'}`}>{skier[evtKey].toFixed(1)}</span>
+                                                                {val > 0 ? (
+                                                                    <>
+                                                                      <div className={`text-sm mb-1 ${sortBy === evtKey ? 'font-black text-blue-800' : 'font-bold text-slate-800'}`}>{val.toFixed(1)}</div>
+                                                                      {dist && (
+                                                                        <div className="flex flex-col gap-0.5 border-t border-slate-100 pt-1">
+                                                                          <div className="text-[10px] text-slate-700 font-bold leading-none flex justify-center items-center gap-1">
+                                                                              <span className="text-[8px] uppercase text-slate-400 font-normal">Odległość:</span>
+                                                                              {dist.toFixed(1)}m
+                                                                          </div>
+                                                                          <div className="flex justify-center gap-2 text-[9px] font-semibold text-slate-600 leading-none">
+                                                                             <span title="Nota"><span className="text-slate-400 font-normal">Nota:</span>{note}</span>
+                                                                             <span title="Kompensata"><span className="text-slate-400 font-normal">Komp.:</span>{comp > 0 ? '+' : ''}{comp}</span>
+                                                                          </div>
+                                                                        </div>
+                                                                      )}
+                                                                    </>
                                                                 ) : (<span className="text-[10px] text-slate-200">-</span>)}
                                                             </td>
                                                         );
@@ -1255,10 +1380,29 @@
                                                     <td className="p-2 text-center text-xs text-slate-500 font-mono">{skier.seriesCount}</td>
                                                     {Object.values(ALL_COMPETITIONS_EVENTS).map((evt) => {
                                                         if (!selectedAllColumns.includes(evt.id)) return null;
+                                                        const val = skier[evt.id];
+                                                        const dist = skier[evt.id + '_dist'];
+                                                        const note = skier[evt.id + '_note'];
+                                                        const comp = skier[evt.id + '_comp'];
+                                                        
                                                         return (
                                                             <td key={evt.id} className={`p-1 text-center border-l border-slate-50 ${sortBy === evt.id ? 'bg-blue-50/30 font-bold text-blue-900' : ''}`}>
-                                                                {skier[evt.id] > 0 ? (
-                                                                    <span className={`text-xs ${sortBy === evt.id ? 'font-bold' : 'font-medium text-slate-600'}`}>{skier[evt.id].toFixed(1)}</span>
+                                                                {val > 0 ? (
+                                                                    <>
+                                                                      <div className={`text-sm mb-1 ${sortBy === evt.id ? 'font-black text-blue-800' : 'font-bold text-slate-800'}`}>{val.toFixed(1)}</div>
+                                                                       {dist && (
+                                                                        <div className="flex flex-col gap-0.5 border-t border-slate-100 pt-1">
+                                                                          <div className="text-[10px] text-slate-700 font-bold leading-none flex justify-center items-center gap-1">
+                                                                              <span className="text-[8px] uppercase text-slate-400 font-normal">Odległość:</span>
+                                                                              {dist.toFixed(1)}m
+                                                                          </div>
+                                                                          <div className="flex justify-center gap-2 text-[9px] font-semibold text-slate-600 leading-none">
+                                                                             <span title="Nota"><span className="text-slate-400 font-normal">Nota:</span>{note}</span>
+                                                                             <span title="Kompensata"><span className="text-slate-400 font-normal">Komp.:</span>{comp > 0 ? '+' : ''}{comp}</span>
+                                                                          </div>
+                                                                        </div>
+                                                                      )}
+                                                                    </>
                                                                 ) : (<span className="text-[10px] text-slate-200">-</span>)}
                                                             </td>
                                                         );
@@ -1318,3 +1462,5 @@
             </ErrorBoundary>
         );
     </script>
+</body>
+</html>
